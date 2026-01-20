@@ -1,0 +1,31 @@
+:root {
+    --appcolor-deeptwilight: #03045E;
+    --appcolor-goldenorange: #EC9A29;
+    --appcolor-tealblue: #0077B6;
+    --appcolor-alt-deeptwilight: #3748a8;
+    --appcolor-alt-goldenorange: #f8a562;
+    --appcolor-alt-tealblue: #77e1e9;
+    --appcolor-white: #f0f0f0;
+    --appcolor-black: #111111;
+
+    --apptextcolor-white: var(--appcolor-white);
+    --apptextcolor-black: var(--appcolor-black);
+
+    --apptextsize-xsm: 0.5rem;
+    --apptextsize-sm: 0.75rem;
+    --apptextsize-base: 1rem;
+    --apptextsize-l: 1.25rem;
+    --apptextsize-xl: 1.5rem;
+    --apptextsize-xxl: 2rem;
+    
+    --approundbox-xsm: 0.5rem;
+    --approundbox-sm: 0.75rem;
+    --approundbox-base: 1rem;
+    --approundbox-l: 1.25rem;
+    --approundbox-xl: 1.5rem;
+    --approundbox-xxl: 2rem;
+
+    --apptransition-fast: 0.25s ease;
+    --apptransition-base: 0.35s ease;
+    --apptransition-slow: 0.50s ease;
+}

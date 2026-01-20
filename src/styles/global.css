@@ -11,5 +11,43 @@
 }
 
 body {
-    min-height: 100vh;
+    height: 100%;
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.workspace {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ---------------------------------------------------------- */
+/* TEMP STYLING */
+/* ---------------------------------------------------------- */
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: solid;
+    height: 60px;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    border: solid;
+    overflow-y: auto;
+}
+
+.work-desk {
+    flex: 1;
+    border: solid;
+    overflow-y: auto;
 }
