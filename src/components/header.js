@@ -1,9 +1,8 @@
 export function initHeader()
 {
     const header = document.getElementById('header');
-    let headerHTML = ``;
 
-    headerHTML = `
+    const headerHTML = `
     <div id="headerWrapper">
     <div class="header-left" id="headerLeft">
         <h3>PENGOLAHAN DATA HIDROLOGI</h3>
