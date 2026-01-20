@@ -11,7 +11,7 @@ export function initHeader()
 
 
     <div class="header-center" id="headerCenter">
-        <span>[dokumen_aktif]</span>
+        <span>[Dokumen Aktif]</span>
     </div>
 
 
