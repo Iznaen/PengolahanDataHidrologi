@@ -1,11 +1,14 @@
 export function dashboardPage()
 {
-    const dashboardHTML = `
+    const dashboard = document.getElementById('workDesk');
+    let dashboardHTML = ``;
+
+    dashboardHTML = `
     <div>Dashboard</div>
     <button id="dbBtn" title="click to change">DB</button>
     `;
 
-    return dashboardHTML;
+    return dashboard.innerHTML = dashboardHTML;
 }
 
 export function dashboardEvents()
