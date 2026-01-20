@@ -1,31 +1,49 @@
+/* ============================================
+   VARIABLES CSS - APLIKASI PENGOLAHAN DATA HIDROLOGI
+   ============================================ */
+
 :root {
-    --appcolor-deeptwilight: #03045E;
-    --appcolor-goldenorange: #EC9A29;
-    --appcolor-tealblue: #0077B6;
-    --appcolor-alt-deeptwilight: #3748a8;
-    --appcolor-alt-goldenorange: #f8a562;
-    --appcolor-alt-tealblue: #77e1e9;
-    --appcolor-white: #f0f0f0;
-    --appcolor-black: #111111;
-
-    --apptextcolor-white: var(--appcolor-white);
-    --apptextcolor-black: var(--appcolor-black);
-
-    --apptextsize-xsm: 0.5rem;
-    --apptextsize-sm: 0.75rem;
-    --apptextsize-base: 1rem;
-    --apptextsize-l: 1.25rem;
-    --apptextsize-xl: 1.5rem;
-    --apptextsize-xxl: 2rem;
+    /* Warna utama aplikasi - tema biru profesional untuk hidrologi */
+    --primary: #2c5282;
+    --primary-dark: #1a365d;
+    --primary-light: #4299e1;
     
-    --approundbox-xsm: 0.5rem;
-    --approundbox-sm: 0.75rem;
-    --approundbox-base: 1rem;
-    --approundbox-l: 1.25rem;
-    --approundbox-xl: 1.5rem;
-    --approundbox-xxl: 2rem;
-
-    --apptransition-fast: 0.25s ease;
-    --apptransition-base: 0.35s ease;
-    --apptransition-slow: 0.50s ease;
+    /* Warna header */
+    --header-bg: #1a365d;
+    --header-text: #f7fafc;
+    
+    /* Warna netral */
+    --gray-50: #f7fafc;
+    --gray-100: #edf2f7;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e0;
+    --gray-400: #a0aec0;
+    --gray-500: #718096;
+    --gray-600: #4a5568;
+    --gray-700: #2d3748;
+    --gray-800: #1a202c;
+    --gray-900: #171923;
+    
+    /* Warna aksen untuk data teknis */
+    --accent-blue: #3182ce;
+    --accent-teal: #319795;
+    --accent-green: #38a169;
+    --accent-orange: #ed8936;
+    --accent-purple: #9f7aea;
+    
+    /* Bayangan */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    
+    /* Border radius */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    
+    /* Transisi */
+    --transition-fast: 150ms ease;
+    --transition-normal: 250ms ease;
+    --transition-slow: 350ms ease;
 }
