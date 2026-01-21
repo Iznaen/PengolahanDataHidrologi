@@ -162,14 +162,16 @@
     font-weight: 500;
 }
 
-/* Submenu indicator */
+/* Submenu indicator - Perbaikan dengan custom properties */
 .sidebar-main:has(+ .sidebar-sub)::after {
-    content: "›";
+    content: var(--chevron-content, "›"); /* Default untuk expanded */
     position: absolute;
     right: 1.5rem;
     color: #a0aec0;
     font-size: 1.2rem;
-    transition: transform 0.3s ease, color 0.3s ease;
+    transition: all 0.3s ease;
+    transform: var(--chevron-transform, rotate(0deg));
+    transform-origin: center;
 }
 
 .sidebar-main:hover::after {
@@ -261,18 +263,6 @@
    ADDITIONAL STYLING FOR SIDEBAR INTERACTIONS
    ========================================================= */
 
-/* Expand/Collapse Indicator */
-.sidebar-expand-icon {
-    margin-left: auto;
-    font-size: 0.8rem;
-    color: #a0aec0;
-    transition: transform 0.3s ease, color 0.3s ease;
-}
-
-.sidebar-main:hover .sidebar-expand-icon {
-    color: var(--accent-teal, #319795);
-}
-
 /* Submenu visibility control */
 .sidebar-sub:not(.visible) {
     display: none;
@@ -305,23 +295,15 @@
 
 /* Mobile responsiveness improvements */
 @media (max-width: 768px) {
+    .sidebar {
+        width: 70px; /* Collapsed by default on mobile */
+    }
+    
     .sidebar:not(.collapsed) {
         width: 260px;
         position: fixed;
         height: calc(100vh - 70px);
         z-index: 100;
-    }
-    
-    .sidebar.collapsed .sidebar-expand-icon {
-        display: none;
-    }
-}
-
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 70px; /* Collapsed by default on mobile */
     }
     
     .sidebar-top span,
@@ -341,42 +323,22 @@
     }
     
     /* Show full sidebar on hover/tap */
-    .sidebar:hover,
-    .sidebar:focus-within {
-        width: 260px;
-        z-index: 99;
-        box-shadow: 4px 0 16px rgba(0, 0, 0, 0.2);
-    }
-    
-    .sidebar:hover .sidebar-top span,
-    .sidebar:hover .sidebar-main span,
-    .sidebar:hover .sidebar-sub span,
-    .sidebar:hover .sidebar-bottom span {
+    .sidebar:not(.collapsed) .sidebar-top span,
+    .sidebar:not(.collapsed) .sidebar-main span,
+    .sidebar:not(.collapsed) .sidebar-sub span,
+    .sidebar:not(.collapsed) .sidebar-bottom span {
         display: block;
     }
     
-    .sidebar:hover .sidebar-sub {
+    .sidebar:not(.collapsed) .sidebar-sub {
         padding-left: 3.5rem;
     }
     
-    .sidebar:hover .sidebar-main:has(+ .sidebar-sub)::after,
-    .sidebar:hover .sidebar-bottom::after {
+    .sidebar:not(.collapsed) .sidebar-main:has(+ .sidebar-sub)::after,
+    .sidebar:not(.collapsed) .sidebar-bottom::after {
         display: block;
     }
 }
 
-/* Animation for submenu expansion */
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.sidebar-sub {
-    animation: slideDown 0.3s ease;
-}
+/* Hapus duplikat keyframes */
+/* @keyframes slideDown sudah didefinisikan di atas */

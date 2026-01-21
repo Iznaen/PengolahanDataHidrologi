@@ -255,11 +255,6 @@ function handleSidebarInteractions()
 
     // 3. Handle Expand/Collapse for Main Menu with Submenus
     mainMenuItemsWithSub.forEach(mainItem => {
-        // Add expand/collapse indicator
-        const indicator = document.createElement('i');
-        indicator.className = 'fas fa-chevron-down sidebar-expand-icon';
-        mainItem.appendChild(indicator);
-        
         // Get all subitems for this main item
         const subItems = [];
         let nextSibling = mainItem.nextElementSibling;
@@ -288,18 +283,19 @@ function handleSidebarInteractions()
                     subItem.classList.remove('visible');
                     subItem.style.display = 'none';
                 });
-                indicator.className = 'fas fa-chevron-right sidebar-expand-icon';
+                // Update chevron in CSS pseudo-element
+                mainItem.style.setProperty('--chevron-content', '"›"');
+                mainItem.style.setProperty('--chevron-transform', 'rotate(0deg)');
             } else {
                 // Expand submenu
                 subItems.forEach(subItem => {
                     subItem.classList.add('visible');
                     subItem.style.display = 'flex';
                 });
-                indicator.className = 'fas fa-chevron-down sidebar-expand-icon';
+                // Update chevron in CSS pseudo-element
+                mainItem.style.setProperty('--chevron-content', '"‹"');
+                mainItem.style.setProperty('--chevron-transform', 'rotate(-90deg)');
             }
-            
-            // Don't prevent default if we want the page to load
-            // e.stopPropagation();
         });
     });
 
