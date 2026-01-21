@@ -27,15 +27,6 @@ body {
 }
 
 /* sidebar dan work-desk */
-.sidebar {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    border: solid;
-    width: 250px;
-    overflow-y: auto;
-}
 
 .work-desk {
     padding: 20px;

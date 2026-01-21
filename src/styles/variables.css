@@ -30,6 +30,13 @@
     --accent-green: #38a169;
     --accent-orange: #ed8936;
     --accent-purple: #9f7aea;
+
+    /* warna sidebar */
+    --sidebar-bg: #1a202c;
+    --sidebar-text: #e2e8f0;
+    --sidebar-hover: rgba(255, 255, 255, 0.05);
+    --sidebar-active: rgba(56, 178, 172, 0.15);
+    --sidebar-border: rgba(255, 255, 255, 0.05);
     
     /* Bayangan */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
