@@ -170,7 +170,7 @@
 /* Khusus untuk input number */
 .form-header input[type="number"] {
     font-family: 'Segoe UI', monospace;
-    text-align: right;
+    text-align: left;
 }
 
 /* =========================================================
