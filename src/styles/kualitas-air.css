@@ -1,0 +1,400 @@
+/* =========================================================
+   STYLING HALAMAN KUALITAS AIR
+   ========================================================= */
+
+/* Wrapper utama */
+.wrapper-kualitas-air {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 1rem auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    max-width: 1400px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* =========================================================
+   FORM TITLE
+   ========================================================= */
+#formTitle {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+#formTitle h2 {
+    color: var(--primary-dark, #1a365d);
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--accent-teal, #319795);
+    letter-spacing: 0.5px;
+
+}
+
+/* =========================================================
+   FORM DATE (Tanggal dan Waktu dalam satu baris)
+   ========================================================= */
+.form-date-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 3rem;
+    background-color: var(--gray-50, #f7fafc);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--gray-200, #e2e8f0);
+}
+
+.form-date-group {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.form-date-group label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--gray-700, #4a5568);
+    min-width: 60px;
+    white-space: nowrap;
+}
+
+.form-date-group input {
+    width: 140px;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--gray-300, #cbd5e0);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: var(--gray-800, #1a202c);
+    background-color: white;
+    transition: all 0.25s ease;
+    font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
+}
+
+.form-date-group button {
+    background: transparent;
+    border: 1px solid var(--gray-300, #cbd5e0);
+    border-radius: 6px;
+    padding: 0.5rem;
+    color: var(--gray-600, #4a5568);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+}
+
+.form-date-group button:hover {
+    background-color: var(--gray-100, #edf2f7);
+    border-color: var(--accent-teal, #319795);
+    color: var(--accent-teal, #319795);
+}
+
+.form-date-group button i {
+    font-size: 0.9rem;
+}
+
+.form-date-group input:focus {
+    outline: none;
+    border-color: var(--accent-teal, #319795);
+    box-shadow: 0 0 0 3px rgba(49, 151, 149, 0.15);
+}
+
+.form-date-group input:hover {
+    border-color: var(--gray-400, #a0aec0);
+}
+
+/* =========================================================
+   FORM HEADER (Kiri dan Kanan bersebelahan)
+   ========================================================= */
+.form-header {
+    display: flex;
+    gap: 2rem;
+    background-color: var(--gray-50, #f7fafc);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--gray-200, #e2e8f0);
+}
+
+/* Bagian kiri dan kanan */
+.form-header-left,
+.form-header-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Container untuk setiap field (label + input) */
+.form-header-field {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.form-header label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--gray-700, #4a5568);
+    min-width: 140px;
+    letter-spacing: 0.3px;
+}
+
+.form-header input {
+    flex: 1;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--gray-300, #cbd5e0);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: var(--gray-800, #1a202c);
+    background-color: white;
+    transition: all 0.25s ease;
+}
+
+.form-header input:focus {
+    outline: none;
+    border-color: var(--accent-teal, #319795);
+    box-shadow: 0 0 0 3px rgba(49, 151, 149, 0.15);
+}
+
+.form-header input:hover:not(:focus) {
+    border-color: var(--gray-400, #a0aec0);
+}
+
+/* Khusus untuk input number */
+.form-header input[type="number"] {
+    font-family: 'Segoe UI', monospace;
+    text-align: right;
+}
+
+/* =========================================================
+   STYLING FLATPICKR
+   ========================================================= */
+.flatpickr-input {
+    cursor: pointer;
+    background-color: white !important;
+}
+
+.flatpickr-calendar {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--gray-200, #e2e8f0);
+}
+
+.flatpickr-day.selected {
+    background: var(--accent-teal, #319795);
+    border-color: var(--accent-teal, #319795);
+}
+
+.flatpickr-day:hover {
+    background: rgba(49, 151, 149, 0.1);
+}
+
+.flatpickr-time input:hover,
+.flatpickr-time .flatpickr-am-pm:hover,
+.flatpickr-time .flatpickr-time-separator:hover,
+.flatpickr-time .flatpickr-hour:hover,
+.flatpickr-time .flatpickr-minute:hover {
+    background: rgba(49, 151, 149, 0.1);
+}
+
+/* =========================================================
+   LAYOUT SPESIFIK (Grid Layout)
+   ========================================================= */
+.wrapper-kualitas-air {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+/* Title - row 1, full width */
+#formTitle {
+    grid-row: 1;
+    grid-column: 1 / -1;
+}
+
+/* Container tanggal dan waktu - row 2, full width */
+.form-date-container {
+    grid-row: 2;
+    grid-column: 1 / -1;
+}
+
+/* Form header - row 3, full width */
+.form-header {
+    grid-row: 3;
+    grid-column: 1 / -1;
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN
+   ========================================================= */
+@media (max-width: 1200px) {
+    .wrapper-kualitas-air {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    .form-header {
+        gap: 1.5rem;
+        padding: 1.2rem;
+    }
+    
+    .form-date-container {
+        gap: 2rem;
+        padding: 1rem 1.5rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .form-header {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .form-date-container {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .form-header-left,
+    .form-header-right {
+        width: 100%;
+    }
+    
+    .form-date-group {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 768px) {
+    .wrapper-kualitas-air {
+        padding: 1rem;
+        margin: 0.5rem;
+        border-radius: 8px;
+        gap: 1.5rem;
+    }
+    
+    #formTitle h2 {
+        font-size: 1.4rem;
+    }
+    
+    .form-date-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        width: 100%;
+    }
+    
+    .form-date-group label {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .form-date-group input {
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    .form-header {
+        padding: 1rem;
+        gap: 1rem;
+    }
+    
+    .form-header-field {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .form-header label {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .form-header input {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .wrapper-kualitas-air {
+        padding: 0.75rem;
+        margin: 0.25rem;
+        gap: 1rem;
+    }
+    
+    #formTitle h2 {
+        font-size: 1.2rem;
+    }
+    
+    .form-date-container {
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
+    
+    .form-header {
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
+}
+
+/* =========================================================
+   VALIDATION & UTILITIES
+   ========================================================= */
+/* Validation styling */
+.form-date-group input.invalid,
+.form-header input.invalid {
+    border-color: #e53e3e;
+    background-color: rgba(229, 62, 62, 0.05);
+}
+
+.form-date-group input.valid,
+.form-header input.valid {
+    border-color: #38a169;
+    background-color: rgba(56, 161, 105, 0.05);
+}
+
+/* Required field indicator */
+.form-date-group label.required::after,
+.form-header label.required::after {
+    content: " *";
+    color: #e53e3e;
+    font-size: 0.9em;
+}
+
+/* Placeholder styling */
+.form-date-group input::placeholder,
+.form-header input::placeholder {
+    color: var(--gray-400, #a0aec0);
+    font-style: italic;
+    font-size: 0.85rem;
+}
+
+/* Loading/disabled state */
+.form-date-group input:disabled,
+.form-header input:disabled {
+    background-color: var(--gray-100, #edf2f7);
+    color: var(--gray-500, #718096);
+    cursor: not-allowed;
+}
+
+/* Flatpickr width fix */
+.flatpickr-input[type="text"] {
+    width: 140px !important;
+}
+
+@media (max-width: 768px) {
+    .flatpickr-input[type="text"] {
+        width: 100% !important;
+        max-width: 200px !important;
+    }
+}

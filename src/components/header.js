@@ -10,11 +10,9 @@ export function initHeader()
         <p>Unit Kerja Hidrologi dan Kualitas Air</p>
     </div>
 
-
     <div class="header-center" id="headerCenter">
-        <span>[Dokumen Aktif]</span>
+        <span id="activeDocument"></span>
     </div>
-
 
     <div class="header-right" id="headerRight">
         <button id="helpBtn" title="Bantuan">
@@ -31,4 +29,11 @@ export function initHeader()
     `;
 
     header.innerHTML = headerHTML;
+}
+
+export function documentIndicator(selectedPage)
+{
+    const docName = document.getElementById('activeDocument');
+
+    docName.innerText = selectedPage;
 }

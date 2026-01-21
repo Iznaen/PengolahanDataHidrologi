@@ -5,6 +5,7 @@
 // import *.js from ./pages to be displayed inside workdesk.js
 import { dashboardPage, dashboardEvents } from "../pages/dashboard.js";
 import { kualitasAirPage, kualitasAirEvents } from "../pages/kualitas-air.js";
+import { documentIndicator } from "../components/header.js";
 
 // communicate with workdesk.js
 import { initPage } from "./workdesk.js";
@@ -34,10 +35,16 @@ function relayPageToWorkdesk()
     // if dashboardBtn exist before listening to it
     dashboardBtn?.addEventListener('click', () => {
         initPage(dashboardPage, dashboardEvents);
+
+        const title = dashboardBtn.querySelector('span').textContent;
+        documentIndicator(title);
     });
 
     kualitasAirBtn?.addEventListener('click', () => {
         initPage(kualitasAirPage, kualitasAirEvents);
+
+        const title = kualitasAirBtn.querySelector('span').textContent;
+        documentIndicator(title);
     });
 }
 
