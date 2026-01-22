@@ -110,19 +110,21 @@ function createHeader()
                 <b>Baku Mutu Berdasarkan: PP No. 22 TAHUN 2022</b>
             </div>
 
-            <div class="form-header-bottom">
-                <label for="sungai">Sungai:</label>
-                <input type="text" name="sungai" id="sungai">
-            </div>
+            <div class="form-header-bottom-grid">
+                <div class="form-header-bottom-item">
+                    <label for="sungai">Sungai:</label>
+                    <input type="text" name="sungai" id="sungai">
+                </div>
 
-            <div class="form-header-bottom">
-                <label for="desa">Desa:</label>
-                <input type="text" name="desa" id="desa">
-            </div>
+                <div class="form-header-bottom-item">
+                    <label for="desa">Desa:</label>
+                    <input type="text" name="desa" id="desa">
+                </div>
 
-            <div class="form-header-bottom">
-                <label for="koordinatGeografis">Koordinat Geografis:</label>
-                <input type="text" name="koordinat_geografis" id="koordinatGeografis">
+                <div class="form-header-bottom-item">
+                    <label for="koordinatGeografis">Koordinat Geografis:</label>
+                    <input type="text" name="koordinat_geografis" id="koordinatGeografis">
+                </div>
             </div>
         </div>
     </div>
