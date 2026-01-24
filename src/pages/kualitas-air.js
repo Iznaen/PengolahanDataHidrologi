@@ -1,6 +1,12 @@
 import { autoInputPDF } from "../utils/pdf-engine.js";
 
 
+// TO DO:
+// > Hitung Storet
+// > Hitung IP
+// > Export excel
+// > Export PDF
+
 export function kualitasAirPage()
 {
     let kualitasAirHTML = `

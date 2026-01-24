@@ -393,6 +393,7 @@
 
 /* Kolom baku mutu */
 .kualitas-air-table td:last-child {
+    text-align: left;
     font-family: monospace;
     font-weight: 500;
     color: var(--accent-green, #38a169);

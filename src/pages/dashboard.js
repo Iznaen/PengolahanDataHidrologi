@@ -172,7 +172,7 @@ function createPage()
         <div class="dashboard-footer">
             <div class="version-info">
                 <i class="fas fa-code-branch"></i>
-                <span>Versi Aplikasi: 2.1.0</span>
+                <span>Version: v0.0.1</span>
             </div>
             <div class="footer-links">
                 <a href="#" class="footer-link">Bantuan</a>
