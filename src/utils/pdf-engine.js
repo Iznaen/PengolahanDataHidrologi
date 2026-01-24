@@ -96,15 +96,12 @@ function structureByKeyword(text, config)
     const allKeywords = config.flatMap(item => item.keywords);
     console.log(allKeywords);
 
-    // 2. Iterasi setiap keyword
-    allKeywords.forEach(key => {
-        // Escape karakter khusus regex
-        const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const regex = new RegExp(escapedKey, 'g');
-        
-        // Ganti keyword menjadi: newline + keyword
-        structuredText = structuredText.replace(regex, `\n${key}`);
-    });
+    // 3. Buat regex pattern untuk mencari pola: "no parameter satuan hasil"
+    // Format yang diharapkan: "1 amoniak mg/l 76,33"
+    const pattern = /(\d+)\s+([a-zA-Z& ]+)\s+(mg\/l|pt co unit|mpn \/ 100 ml)\s+([\d.,<]+)/gi;
+    
+    // 4. Ganti pola yang ditemukan dengan format yang lebih terstruktur
+    structuredText = structuredText.replace(pattern, "\n$1 $2 $3 $4");
 
     return structuredText;
 }
