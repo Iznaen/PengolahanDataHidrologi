@@ -26,9 +26,12 @@ async function readPDF(file, config)
             {
                 const typedarray = new Uint8Array(reader.result);
                 const rawText = await parsePDFContent(typedarray);
-                const cleanText = sanitizePDF(rawText);
-                const finalResult = structureByKeyword(cleanText, config);
-                resolve(finalResult);
+                const sanitized = sanitizePDF(rawText);
+                const structured = structureByKeyword(sanitized, config);
+                const cleaned = cleanRowEdges(structured);
+                const finalData = extractValues(cleaned);
+                
+                resolve(finalData);
             }
             catch (error)
             {
@@ -55,8 +58,10 @@ function sanitizePDF(text)
     let step_3 = removeTerlarut(step_2);
     let step_4 = removeParentheses(step_3);
     let step_5 = collapseSpaces(step_4);
+    let step_6 = convertCommaToDot(step_5);
+    let step_7 = handleLessThan(step_6);
 
-    return step_5;
+    return step_7;
 }
 
 // -----------------------------------------------------------
@@ -92,15 +97,10 @@ function structureByKeyword(text, config)
 {
     let structuredText = text;
 
-    // 1. Ambil semua keyword dari config
-    const allKeywords = config.flatMap(item => item.keywords);
-    console.log(allKeywords);
-
-    // 3. Buat regex pattern untuk mencari pola: "no parameter satuan hasil"
-    // Format yang diharapkan: "1 amoniak mg/l 76,33"
+    // 1. Buat regex pattern untuk mencari pola: "no parameter satuan hasil"
     const pattern = /(\d+)\s+([a-zA-Z& ]+)\s+(mg\/l|pt co unit|mpn \/ 100 ml)\s+([\d.,<]+)/gi;
     
-    // 4. Ganti pola yang ditemukan dengan format yang lebih terstruktur
+    // 2. Ganti pola yang ditemukan dengan format yang lebih terstruktur
     structuredText = structuredText.replace(pattern, "\n$1 $2 $3 $4");
 
     return structuredText;
@@ -139,4 +139,98 @@ function removeParentheses(text)
 {
     // Menghapus tanda kurung () dan semua karakter yang ada di dalamnya
     return text.replace(/\([^)]*\)/g, '');
+}
+
+function convertCommaToDot(text)
+{
+    return text.replace(/,/g, '.');
+}
+
+function handleLessThan(text) 
+{
+    // Tambahkan \s* untuk menangani spasi nol atau lebih antara < dan angka
+    return text.replace(/<\s*([\d.]+)/g, (_, p1) => {
+        const value = parseFloat(p1);
+        
+        if (isNaN(value)) return p1;
+
+        // Turunkan nilai 1%
+        const newValue = value * 0.99;
+        
+        // Kembalikan angka saja (simbol < dan spasi otomatis hilang)
+        return newValue.toString();
+    });
+}
+
+function fixSlashSpacing(text)
+{
+    // Mencari satu atau lebih spasi di sekitar / yang diikuti huruf/angka
+    // \s+ : spasi satu atau lebih
+    return text.replace(/\s+\/\s+(?=[a-zA-Z0-9])/g, '/');
+}
+
+
+/**
+ * Membersihkan nomor urut di awal baris dan teks SNI di akhir baris
+ */
+function cleanRowEdges(text) 
+{
+    if (!text) return "";
+
+    return text
+        // 1. Menghapus nomor di awal baris (digit yang diikuti spasi)
+        // ^\d+\s+ : Cari angka di awal baris (^) yang diikuti spasi
+        .replace(/^\d+\s+/gm, '') 
+        
+        // 2. Menghapus 'sni' sampai akhir baris
+        .replace(/sni.*/g, '');
+}
+
+
+/**
+ * Mengekstrak nilai dari akhir baris dengan memindai karakter dari kanan ke kiri
+ */
+function extractValues(text) {
+    const lines = text.split('\n');
+    const results = [];
+
+    lines.forEach(line => {
+        const trimmedLine = line.trim();
+        if (!trimmedLine) return;
+
+        let value = "";
+        let foundDigit = false;
+
+        // Iterasi dari karakter paling belakang ke depan
+        for (let i = trimmedLine.length - 1; i >= 0; i--) {
+            const char = trimmedLine[i];
+
+            // Regex untuk mendeteksi karakter angka, koma, titik, atau simbol < / >
+            const isDataChar = /[\d.,<>]/.test(char);
+
+            if (isDataChar) {
+                value = char + value; // Tambahkan karakter ke depan string value
+                foundDigit = true;
+            } else if (foundDigit && char === " ") {
+                // Jika kita sudah mulai mengambil angka lalu ketemu spasi, 
+                // berarti itu adalah batas akhir angka. BERHENTI.
+                break;
+            } else if (foundDigit && /[a-zA-Z]/.test(char)) {
+                // Jika ketemu huruf saat sudah mengambil angka, berhenti.
+                break;
+            }
+        }
+
+        // Ambil sisa teks di sebelah kiri sebagai nama parameter mentah
+        const parameterName = trimmedLine.replace(value, "").trim();
+
+        if (value) {
+            results.push({
+                parameter: parameterName,
+                value: value
+            });
+        }
+    });
+
+    return results;
 }

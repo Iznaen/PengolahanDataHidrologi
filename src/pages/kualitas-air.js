@@ -41,6 +41,8 @@ function uploadPDF()
                     const config = createKeywordList();
 
                     const structuredText = await autoInputPDF(file, config);
+
+                    injectToForm(structuredText, config)
                     
                     console.log("--- HASIL EKSTRAKSI MENTAH (LOWERCASE) ---");
                     console.log(structuredText);
@@ -76,6 +78,130 @@ function createKeywordList()
     })));
 
     return config;
+}
+
+
+// ----------------------------------------------------------
+// INJEKSI DATA EKSTRAKSI DARI PDF KE DALAM TABEL
+// @param {Array} extractedData - Array objek {parameter, value}
+// @param {Array} config - Array keyword dari createKeywordList()
+// panggil di uploadPDF event onchange
+// ----------------------------------------------------------
+function injectToForm(extractedData, config) {
+    console.log("=== INJEKSI DATA KE FORM ===");
+    console.log("Data yang diekstrak:", extractedData);
+    console.log("Konfigurasi keyword:", config);
+    
+    // 1. Buat mapping langsung dari nama parameter ke ID
+    const directMapping = {
+        'amoniak': 'amoniak',
+        'belerang': 'belerang',
+        'nitrit': 'nitrit',
+        'nitrite': 'nitrit',
+        'tds': 'tds',
+        'tss': 'tss',
+        'nitrat': 'nitrat',
+        'nitrate': 'nitrat',
+        'cod': 'cod',
+        'bod': 'bod',
+        'warna': 'warna',
+        'color': 'warna',
+        'detergen': 'deterjen',
+        'minyak & lemak': 'minyakDanLemak',
+        'minyak dan lemak': 'minyakDanLemak',
+        'fenol': 'fenol',
+        'phenol': 'fenol',
+        'sianida': 'sianida',
+        'cyanide': 'sianida',
+        'fluorida': 'fluorida',
+        'fluoride': 'fluorida',
+        'klorida': 'klorida',
+        'chloride': 'klorida',
+        'besi': 'besi',
+        'iron': 'besi',
+        'fosfat': 'fosfat',
+        'tembaga': 'tembaga',
+        'copper': 'tembaga',
+        'coliform': 'totalColiform',
+        'mangan': 'mangan',
+        'arsen': 'arsen',
+        'as': 'arsen',
+        'merkuri': 'merkuri',
+        'mercury': 'merkuri'
+    };
+    
+    // 2. Filter data - hapus index 0 (metadata)
+    const filteredData = extractedData.slice(1);
+    
+    // 3. Proses setiap data
+    let injectedCount = 0;
+    
+    filteredData.forEach(item => {
+        const { parameter: rawParam, value } = item;
+        
+        console.log(`\nProcessing: "${rawParam}" = ${value}`);
+        
+        // Ekstrak nama parameter dari string (hilangkan satuan)
+        const paramName = rawParam
+            .toLowerCase()
+            .replace(/\s*(mg\/l|pt co unit|mpn \/ 100 ml).*$/, '')
+            .trim();
+        
+        console.log(`Parameter name: "${paramName}"`);
+        
+        // Cari di mapping langsung
+        let matchedId = null;
+        
+        // Cek apakah paramName cocok dengan key di directMapping
+        for (const [key, id] of Object.entries(directMapping)) {
+            if (paramName === key) {
+                matchedId = id;
+                console.log(`✓ Cocok langsung: "${key}" -> ID: "${id}"`);
+                break;
+            }
+        }
+        
+        // Jika tidak cocok langsung, coba cari substring
+        if (!matchedId) {
+            for (const [key, id] of Object.entries(directMapping)) {
+                if (paramName.includes(key) && key.length > 2) { // hanya keyword > 2 karakter
+                    matchedId = id;
+                    console.log(`✓ Cocok substring: "${key}" dalam "${paramName}" -> ID: "${id}"`);
+                    break;
+                }
+            }
+        }
+        
+        // Jika ditemukan ID, injeksi ke form
+        if (matchedId) {
+            const inputElement = document.getElementById(matchedId);
+            if (inputElement) {
+                inputElement.value = value;
+                console.log(`✓ Data dimasukkan: ${matchedId} = ${value}`);
+                injectedCount++;
+                
+                // Tambahkan efek visual
+                inputElement.style.backgroundColor = '#e8f5e9';
+                setTimeout(() => {
+                    inputElement.style.backgroundColor = '';
+                }, 2000);
+            } else {
+                console.log(`✗ Input element dengan ID "${matchedId}" tidak ditemukan`);
+            }
+        } else {
+            console.log(`✗ Tidak ditemukan mapping untuk parameter: "${paramName}"`);
+        }
+    });
+    
+    // Beri feedback kepada pengguna
+    if (injectedCount > 0) {
+        alert(`✅ ${injectedCount} data berhasil dimasukkan ke form!`);
+    } else {
+        alert("⚠️ Tidak ada data yang berhasil dimasukkan. Periksa konsol untuk detail.");
+    }
+    
+    console.log(`\n=== INJEKSI SELESAI ===`);
+    console.log(`Total data yang diinjeksi: ${injectedCount}/${filteredData.length}`);
 }
 
 
