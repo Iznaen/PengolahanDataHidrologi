@@ -1,5 +1,6 @@
-export function kualitasAirPage()
-{
+import { extractTextFromPDF } from "../utils/pdf-engine.js";
+
+export function kualitasAirPage() {
     let kualitasAirHTML = `
     <div class="wrapper-kualitas-air" id="wrapperKualitasAir">
         ${createHeader()}
@@ -11,21 +12,70 @@ export function kualitasAirPage()
     return kualitasAirHTML;
 }
 
-export function kualitasAirEvents()
-{
-
+export function kualitasAirEvents() {
     initFlatpicker();
+    uploadPDF();
+}
+
+function uploadPDF() {
+    const uploadBtn = document.getElementById('uploadPDFBtn');
+
+    if (uploadBtn) {
+        uploadBtn.addEventListener('click', () => {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'application/pdf';
+
+            fileInput.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    try {
+                        // Kita panggil fungsi baru kita
+                        const configUntukEngine = getAutoConfig();
+
+                        // Gunakan log biasa, jangan table dulu untuk memastikan data lewat
+                        console.log("--- DEBUG: BERHASIL MENGAMBIL CONFIG ---");
+                        console.log("Jumlah Parameter:", configUntukEngine.length);
+                        console.log("Data:", configUntukEngine);
+
+                        console.log("Memulai proses pembacaan...");
+
+                        // Kirim variabel 'configUntukEngine' ke engine
+                        const rawText = await extractTextFromPDF(file, configUntukEngine);
+
+                        console.log("--- HASIL BACAAN PDF ---");
+                        console.log(rawText);
+
+                        alert("Selesai!");
+                    } catch (error) {
+                        console.error("Error di uploadPDF:", error);
+                    }
+                }
+            };
+
+            fileInput.click();
+        });
+    }
 }
 
 
-function createHeader()
-{
+function createHeader() {
     let html = `
     <!-- -------------------------------------------------- -->
     <!-- FORM TITLE --------------------------------------- -->
     <!-- -------------------------------------------------- -->
     <div id="formTitle">
         <h2>DATA KUALITAS AIR</h2>
+        <div class="upload-controls">
+            <button class="upload-file-KA" id="uploadPDFBtn">
+                <i class="fas fa-upload"></i>
+                <span>Upload PDF</span>
+            </button>
+            <button class="upload-file-KA" id="uploadImageBtn">
+                <i class="fas fa-image"></i>
+                <span>Upload Foto</span>
+            </button>
+        </div>
     </div>
     <!-- -------------------------------------------------- -->
     <!-- FORM DATE ---------------------------------------- -->
@@ -133,10 +183,10 @@ function createHeader()
     return html;
 }
 
-
-function createTable()
-{
-    const tableData = [
+// inisialisasi array untuk tabel form agar nantinya tabel
+// ini bisa digunakan di tempat lain
+function initTableData() {
+    return [
         {
             kind: "header",
             content: ["No", "Parameter", "Satuan", "Hasil", "Baku Mutu"]
@@ -166,70 +216,91 @@ function createTable()
             category: "Nutrient",
             kind: "body",
             content: [
-                { no: "10", label: "Amoniak", id: "amoniak", keywords: ["Ammonia", "NH3"], satuan: "mg/l", baku: "0.5" },
+                { no: "10", label: "Amoniak", id: "amoniak", keywords: ["amoniak", "Ammonia", "NH3"], satuan: "mg/l", baku: "0.5" },
                 { no: "11", label: "Nitrat (NO3)", id: "nitrat", keywords: ["Nitrate"], satuan: "mg/l", baku: "20.0" },
                 { no: "12", label: "Nitrit (NO2)", id: "nitrit", keywords: ["Nitrite"], satuan: "mg/l", baku: "0.06" },
-                { no: "13", label: "Deterjen", id: "deterjen", keywords: ["Surfactant", "MBAS"], satuan: "mg/l", baku: "0.2" }
+                { no: "13", label: "Fosfat", id: "fosfat", keywords: ["Surfactant", "MBAS", "phospat", "fosfat"], satuan: "mg/l", baku: "0.2" },
+                { no: "14", label: "Deterjen", id: "deterjen", keywords: ["Surfactant", "MBAS", "detergen"], satuan: "mg/l", baku: "0.2" }
             ]
         },
         {
             category: "Unsur Mikro",
             kind: "body",
             content: [
-                { no: "14", label: "Arsen", id: "arsen", keywords: ["As"], satuan: "mg/l", baku: "0.05-0.1" },
-                { no: "15", label: "Besi Terlarut (Fe)", id: "besi", keywords: ["Iron"], satuan: "mg/l", baku: "-" },
-                { no: "16", label: "Mangan", id: "mangan", keywords: ["Mn"], satuan: "mg/l", baku: "-" },
-                { no: "17", label: "Tembaga", id: "tembaga", keywords: ["Cu", "Copper"], satuan: "mg/l", baku: "0.02-0.2" },
-                { no: "18", label: "Merkuri (Hg)", id: "merkuri", keywords: ["Mercury"], satuan: "mg/l", baku: "0.002" }
+                { no: "15", label: "Arsen", id: "arsen", keywords: ["As"], satuan: "mg/l", baku: "0.05-0.1" },
+                { no: "16", label: "Besi Terlarut (Fe)", id: "besi", keywords: ["Iron"], satuan: "mg/l", baku: "-" },
+                { no: "17", label: "Mangan", id: "mangan", keywords: ["Mn"], satuan: "mg/l", baku: "-" },
+                { no: "18", label: "Tembaga", id: "tembaga", keywords: ["Cu", "Copper"], satuan: "mg/l", baku: "0.02-0.2" },
+                { no: "19", label: "Merkuri (Hg)", id: "merkuri", keywords: ["Mercury"], satuan: "mg/l", baku: "0.002" }
             ]
         },
         {
             category: "Anorganik",
             kind: "body",
             content: [
-                { no: "19", label: "Cianida", id: "cianida", keywords: ["Cyanide", "CN"], satuan: "mg/l", baku: "0.02" },
-                { no: "20", label: "Fluorida", id: "fluorida", keywords: ["Fluoride", "F"], satuan: "mg/l", baku: "1.5" }
+                { no: "20", label: "Sianida", id: "sianida", keywords: ["Cyanide", "CN"], satuan: "mg/l", baku: "0.02" },
+                { no: "21", label: "Fluorida", id: "fluorida", keywords: ["Fluoride", "F"], satuan: "mg/l", baku: "1.5" }
             ]
         },
         {
             category: "Organik",
             kind: "body",
             content: [
-                { no: "21", label: "COD", id: "cod", keywords: ["Chemical Oxygen Demand"], satuan: "mg/l", baku: "40-80" },
-                { no: "22", label: "BOD", id: "bod", keywords: ["Biochemical Oxygen Demand"], satuan: "mg/l", baku: "6-12" }
+                { no: "22", label: "COD", id: "cod", keywords: ["Chemical Oxygen Demand"], satuan: "mg/l", baku: "40-80" },
+                { no: "23", label: "BOD", id: "bod", keywords: ["Biochemical Oxygen Demand"], satuan: "mg/l", baku: "6-12" }
             ]
         },
         {
             category: "Kontaminan Organik",
             kind: "body",
             content: [
-                { no: "23", label: "Minyak dan Lemak", id: "minyak_lemak", keywords: ["Oil", "Grease"], satuan: "mg/l", baku: "1-10" },
-                { no: "24", label: "Fenol", id: "fenol", keywords: ["Phenol"], satuan: "mg/l", baku: "0.01-0.02" },
-                { no: "25", label: "Belerang (H2S)", id: "belerang", keywords: ["Sulfide", "H2S"], satuan: "mg/l", baku: "-" }
+                { no: "24", label: "Minyak dan Lemak", id: "minyak_lemak", keywords: ["Oil", "Grease", "minyak & lemak", "minyakLemak"], satuan: "mg/l", baku: "1-10" },
+                { no: "25", label: "Fenol", id: "fenol", keywords: ["Phenol"], satuan: "mg/l", baku: "0.01-0.02" },
+                { no: "26", label: "Belerang (H2S)", id: "belerang", keywords: ["belerang", "Sulfide", "H2S"], satuan: "mg/l", baku: "-" }
             ]
         },
         {
             category: "Ion",
             kind: "body",
             content: [
-                { no: "26", label: "Sulfida", id: "sulfida", keywords: ["Sulphide"], satuan: "mg/l", baku: "0.002" }
+                { no: "27", label: "Sulfida", id: "sulfida", keywords: ["Sulphide"], satuan: "mg/l", baku: "0.002" }
             ]
         },
         {
             category: "Mikrobiologi",
             kind: "body",
             content: [
-                { no: "27", label: "Total Coliform", id: "total_coliform", keywords: ["Coliform"], satuan: "MPN/100ml", baku: "1.000" }
+                { no: "28", label: "Total Coliform", id: "total_coliform", keywords: ["Coliform", "total coliform"], satuan: "MPN/100ml", baku: "1.000" }
             ]
         },
         {
             category: "Lain-lain",
             kind: "body",
             content: [
-                { no: "28", label: "Debit", id: "debit", keywords: ["Flow", "Discharge"], satuan: "m3/dt", baku: "-" }
+                { no: "29", label: "Debit", id: "debit", keywords: ["Flow", "Discharge"], satuan: "m3/dt", baku: "-" }
             ]
         }
     ];
+}
+
+// persiapan data keyword untuk pdf engine
+function getAutoConfig() {
+    const data = initTableData();
+    
+    const filtered = data.filter(section => section.kind === "body");
+    
+    const config = filtered.flatMap(section => section.content.map(item => ({
+        id: item.id,
+        // Kita gabungkan ID dan Keywords menjadi satu array lowercase
+        keywords: [item.id.toLowerCase(), ...item.keywords.map(k => k.toLowerCase())]
+    })));
+
+    return config;
+}
+
+
+function createTable() {
+    const tableData = initTableData();
 
     let html = `<table class="kualitas-air-table">`;
 
@@ -241,7 +312,7 @@ function createTable()
         } else {
             // Baris Judul Kategori
             html += `<tr class="table-category-row"><td colspan="5">${section.category}</td></tr>`;
-            
+
             // Baris Data
             section.content.forEach(item => {
                 html += `
@@ -323,8 +394,7 @@ function createFooter() {
 
 // library untuk pengambilan waktu dan tanggal disinkronkan
 // dengan id tag tanggal dan id tag waktu
-function initFlatpicker()
-{
+function initFlatpicker() {
     flatpickr("#sampleDate", {
         dateFormat: "d-m-Y"
     });
