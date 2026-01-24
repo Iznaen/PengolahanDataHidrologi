@@ -1,6 +1,8 @@
-import { extractTextFromPDF } from "../utils/pdf-engine.js";
+import { autoInputPDF } from "../utils/pdf-engine.js";
 
-export function kualitasAirPage() {
+
+export function kualitasAirPage()
+{
     let kualitasAirHTML = `
     <div class="wrapper-kualitas-air" id="wrapperKualitasAir">
         ${createHeader()}
@@ -12,50 +14,170 @@ export function kualitasAirPage() {
     return kualitasAirHTML;
 }
 
-export function kualitasAirEvents() {
+
+export function kualitasAirEvents()
+{
     initFlatpicker();
     uploadPDF();
 }
 
-function uploadPDF() {
+
+function uploadPDF()
+{
     const uploadBtn = document.getElementById('uploadPDFBtn');
 
-    if (uploadBtn) {
-        uploadBtn.addEventListener('click', () => {
-            const fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.accept = 'application/pdf';
+    uploadBtn?.addEventListener('click', () => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'application/pdf';
 
-            fileInput.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    try {
-                        // Kita panggil fungsi baru kita
-                        const configUntukEngine = getAutoConfig();
+        fileInput.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (file)
+            {
+                try
+                {
+                    console.log("🚀 Memproses PDF...");
+                    const config = createKeywordList();
 
-                        // Gunakan log biasa, jangan table dulu untuk memastikan data lewat
-                        console.log("--- DEBUG: BERHASIL MENGAMBIL CONFIG ---");
-                        console.log("Jumlah Parameter:", configUntukEngine.length);
-                        console.log("Data:", configUntukEngine);
-
-                        console.log("Memulai proses pembacaan...");
-
-                        // Kirim variabel 'configUntukEngine' ke engine
-                        const rawText = await extractTextFromPDF(file, configUntukEngine);
-
-                        console.log("--- HASIL BACAAN PDF ---");
-                        console.log(rawText);
-
-                        alert("Selesai!");
-                    } catch (error) {
-                        console.error("Error di uploadPDF:", error);
-                    }
+                    const structuredText = await autoInputPDF(file, config);
+                    
+                    console.log("--- HASIL EKSTRAKSI MENTAH (LOWERCASE) ---");
+                    console.log(structuredText);
+                    
+                    alert("Ekstraksi berhasil! Cek hasil di Console Log.");
+                } 
+                catch (error)
+                {
+                    console.error("❌ Error Ekstraksi:", error);
+                    alert("Gagal membaca PDF: " + error);
                 }
-            };
+            }
+        };
 
-            fileInput.click();
-        });
-    }
+        fileInput.click();
+    });
+}
+
+
+// ----------------------------------------------------------
+// MEMBUAT ARRAY DARI initTableData()
+// ----------------------------------------------------------
+function createKeywordList()
+{
+    const data = initTableData();
+    
+    const filtered = data.filter(section => section.kind === "body");
+    
+    const config = filtered.flatMap(section => section.content.map(item => ({
+        id: item.id,
+        // gabung ID dan Keywords menjadi satu array lowercase
+        keywords: [item.id.toLowerCase(), ...item.keywords.map(k => k.toLowerCase())]
+    })));
+
+    return config;
+}
+
+
+// ----------------------------------------------------------
+// DATA TABEL FORM KUALITAS AIR
+// ----------------------------------------------------------
+function initTableData() {
+    return [
+        {
+            kind: "header",
+            content: ["No", "Parameter", "Satuan", "Hasil", "Baku Mutu"]
+        },
+        {
+            category: "Variabel Umum",
+            kind: "body",
+            content: [
+                { no: "1", label: "Temperatur", id: "temperatur", keywords: ["Suhu", "Temperature"], satuan: "°C", baku: "15-35" },
+                { no: "2", label: "Konduktivitas (DHL)", id: "konduktivitas", keywords: ["Conductivity", "EC", "dhl"], satuan: "umhos", baku: "-" },
+                { no: "3", label: "Kekeruhan (Turbidity)", id: "kekeruhan", keywords: ["Turbidity"], satuan: "mg/l", baku: "-" },
+                { no: "4", label: "Oksigen Terlarut (DO)", id: "oksigen", keywords: ["Dissolved Oxygen", "DO", "Oxygen"], satuan: "mg/l", baku: "1.7-19" },
+                { no: "5", label: "pH", id: "ph", keywords: ["Keasaman"], satuan: "-", baku: "0-14" },
+                { no: "6", label: "Zat Terlarut (TDS)", id: "tds", keywords: ["Total Dissolved Solids", "Zat Terlarut"], satuan: "mg/l", baku: "1000-2000" },
+                { no: "7", label: "Zat Tersuspensi (TSS)", id: "tss", keywords: ["Total Suspended Solids", "Zat Tersuspensi"], satuan: "mg/l", baku: "100-400" },
+                { no: "8", label: "Warna", id: "warna", keywords: ["Color"], satuan: "Pt-Co Unit", baku: "100" }
+            ]
+        },
+        {
+            category: "Major Ion",
+            kind: "body",
+            content: [
+                { no: "9", label: "Klorida (Cl)", id: "klorida", keywords: ["Chloride", "Klorin", "Cl"], satuan: "mg/l", baku: "300" }
+            ]
+        },
+        {
+            category: "Nutrient",
+            kind: "body",
+            content: [
+                { no: "10", label: "Amoniak", id: "amoniak", keywords: ["amoniak", "Ammonia", "NH3"], satuan: "mg/l", baku: "0.5" },
+                { no: "11", label: "Nitrat (NO3)", id: "nitrat", keywords: ["Nitrate"], satuan: "mg/l", baku: "20.0" },
+                { no: "12", label: "Nitrit (NO2)", id: "nitrit", keywords: ["Nitrite"], satuan: "mg/l", baku: "0.06" },
+                { no: "13", label: "Fosfat", id: "fosfat", keywords: ["Surfactant"], satuan: "mg/l", baku: "0.2" },
+                { no: "14", label: "Deterjen", id: "deterjen", keywords: ["Surfactant", "MBAS", "detergen"], satuan: "mg/l", baku: "0.2" }
+            ]
+        },
+        {
+            category: "Unsur Mikro",
+            kind: "body",
+            content: [
+                { no: "15", label: "Arsen", id: "arsen", keywords: ["As"], satuan: "mg/l", baku: "0.05-0.1" },
+                { no: "16", label: "Besi Terlarut (Fe)", id: "besi", keywords: ["Iron"], satuan: "mg/l", baku: "-" },
+                { no: "17", label: "Mangan", id: "mangan", keywords: ["Mn"], satuan: "mg/l", baku: "-" },
+                { no: "18", label: "Tembaga", id: "tembaga", keywords: ["Cu", "Copper"], satuan: "mg/l", baku: "0.02-0.2" },
+                { no: "19", label: "Merkuri (Hg)", id: "merkuri", keywords: ["Mercury"], satuan: "mg/l", baku: "0.002" }
+            ]
+        },
+        {
+            category: "Anorganik",
+            kind: "body",
+            content: [
+                { no: "20", label: "Sianida", id: "sianida", keywords: ["Cyanide", "CN"], satuan: "mg/l", baku: "0.02" },
+                { no: "21", label: "Fluorida", id: "fluorida", keywords: ["Fluoride", "F"], satuan: "mg/l", baku: "1.5" }
+            ]
+        },
+        {
+            category: "Organik",
+            kind: "body",
+            content: [
+                { no: "22", label: "COD", id: "cod", keywords: ["Chemical Oxygen Demand"], satuan: "mg/l", baku: "40-80" },
+                { no: "23", label: "BOD", id: "bod", keywords: ["Biochemical Oxygen Demand"], satuan: "mg/l", baku: "6-12" }
+            ]
+        },
+        {
+            category: "Kontaminan Organik",
+            kind: "body",
+            content: [
+                { no: "24", label: "Minyak dan Lemak", id: "minyakDanLemak", keywords: ["Oil", "Grease", "minyak & lemak", "minyakLemak", "minyak dan lemak"], satuan: "mg/l", baku: "1-10" },
+                { no: "25", label: "Fenol", id: "fenol", keywords: ["Phenol"], satuan: "mg/l", baku: "0.01-0.02" },
+                { no: "26", label: "Belerang (H2S)", id: "belerang", keywords: ["belerang", "Sulfide", "H2S"], satuan: "mg/l", baku: "-" }
+            ]
+        },
+        {
+            category: "Ion",
+            kind: "body",
+            content: [
+                { no: "27", label: "Sulfida", id: "sulfida", keywords: ["Sulphide"], satuan: "mg/l", baku: "0.002" }
+            ]
+        },
+        {
+            category: "Mikrobiologi",
+            kind: "body",
+            content: [
+                { no: "28", label: "Total Coliform", id: "totalColiform", keywords: ["Coliform"], satuan: "MPN/100ml", baku: "1.000" }
+            ]
+        },
+        {
+            category: "Lain-lain",
+            kind: "body",
+            content: [
+                { no: "29", label: "Debit", id: "debit", keywords: ["Flow", "Discharge"], satuan: "m3/dt", baku: "-" }
+            ]
+        }
+    ];
 }
 
 
@@ -181,121 +303,6 @@ function createHeader() {
     `;
 
     return html;
-}
-
-// inisialisasi array untuk tabel form agar nantinya tabel
-// ini bisa digunakan di tempat lain
-function initTableData() {
-    return [
-        {
-            kind: "header",
-            content: ["No", "Parameter", "Satuan", "Hasil", "Baku Mutu"]
-        },
-        {
-            category: "Variabel Umum",
-            kind: "body",
-            content: [
-                { no: "1", label: "Temperatur", id: "temperatur", keywords: ["Suhu", "Temp"], satuan: "°C", baku: "15-35" },
-                { no: "2", label: "Konduktivitas (DHL)", id: "dhl", keywords: ["Conductivity", "EC"], satuan: "umhos", baku: "-" },
-                { no: "3", label: "Kekeruhan (Turbidity)", id: "kekeruhan", keywords: ["Turbidity"], satuan: "mg/l", baku: "-" },
-                { no: "4", label: "Oksigen Terlarut (DO)", id: "do", keywords: ["Dissolved Oxygen"], satuan: "mg/l", baku: "1.7-19" },
-                { no: "5", label: "pH", id: "ph", keywords: ["Keasaman"], satuan: "-", baku: "0-14" },
-                { no: "6", label: "Zat Terlarut (TDS)", id: "tds", keywords: ["Total Dissolved Solids"], satuan: "mg/l", baku: "1000-2000" },
-                { no: "7", label: "Zat Tersuspensi (TSS)", id: "tss", keywords: ["Total Suspended Solids"], satuan: "mg/l", baku: "100-400" },
-                { no: "8", label: "Warna", id: "warna", keywords: ["Color"], satuan: "Pt-Co Unit", baku: "100" }
-            ]
-        },
-        {
-            category: "Major Ion",
-            kind: "body",
-            content: [
-                { no: "9", label: "Klorida (Cl)", id: "klorida", keywords: ["Chloride Klorida"], satuan: "mg/l", baku: "300" }
-            ]
-        },
-        {
-            category: "Nutrient",
-            kind: "body",
-            content: [
-                { no: "10", label: "Amoniak", id: "amoniak", keywords: ["amoniak", "Ammonia", "NH3"], satuan: "mg/l", baku: "0.5" },
-                { no: "11", label: "Nitrat (NO3)", id: "nitrat", keywords: ["Nitrate"], satuan: "mg/l", baku: "20.0" },
-                { no: "12", label: "Nitrit (NO2)", id: "nitrit", keywords: ["Nitrite"], satuan: "mg/l", baku: "0.06" },
-                { no: "13", label: "Fosfat", id: "fosfat", keywords: ["Surfactant", "MBAS", "phospat", "fosfat"], satuan: "mg/l", baku: "0.2" },
-                { no: "14", label: "Deterjen", id: "deterjen", keywords: ["Surfactant", "MBAS", "detergen"], satuan: "mg/l", baku: "0.2" }
-            ]
-        },
-        {
-            category: "Unsur Mikro",
-            kind: "body",
-            content: [
-                { no: "15", label: "Arsen", id: "arsen", keywords: ["As"], satuan: "mg/l", baku: "0.05-0.1" },
-                { no: "16", label: "Besi Terlarut (Fe)", id: "besi", keywords: ["Iron"], satuan: "mg/l", baku: "-" },
-                { no: "17", label: "Mangan", id: "mangan", keywords: ["Mn"], satuan: "mg/l", baku: "-" },
-                { no: "18", label: "Tembaga", id: "tembaga", keywords: ["Cu", "Copper"], satuan: "mg/l", baku: "0.02-0.2" },
-                { no: "19", label: "Merkuri (Hg)", id: "merkuri", keywords: ["Mercury"], satuan: "mg/l", baku: "0.002" }
-            ]
-        },
-        {
-            category: "Anorganik",
-            kind: "body",
-            content: [
-                { no: "20", label: "Sianida", id: "sianida", keywords: ["Cyanide", "CN"], satuan: "mg/l", baku: "0.02" },
-                { no: "21", label: "Fluorida", id: "fluorida", keywords: ["Fluoride", "F"], satuan: "mg/l", baku: "1.5" }
-            ]
-        },
-        {
-            category: "Organik",
-            kind: "body",
-            content: [
-                { no: "22", label: "COD", id: "cod", keywords: ["Chemical Oxygen Demand"], satuan: "mg/l", baku: "40-80" },
-                { no: "23", label: "BOD", id: "bod", keywords: ["Biochemical Oxygen Demand"], satuan: "mg/l", baku: "6-12" }
-            ]
-        },
-        {
-            category: "Kontaminan Organik",
-            kind: "body",
-            content: [
-                { no: "24", label: "Minyak dan Lemak", id: "minyak_lemak", keywords: ["Oil", "Grease", "minyak & lemak", "minyakLemak"], satuan: "mg/l", baku: "1-10" },
-                { no: "25", label: "Fenol", id: "fenol", keywords: ["Phenol"], satuan: "mg/l", baku: "0.01-0.02" },
-                { no: "26", label: "Belerang (H2S)", id: "belerang", keywords: ["belerang", "Sulfide", "H2S"], satuan: "mg/l", baku: "-" }
-            ]
-        },
-        {
-            category: "Ion",
-            kind: "body",
-            content: [
-                { no: "27", label: "Sulfida", id: "sulfida", keywords: ["Sulphide"], satuan: "mg/l", baku: "0.002" }
-            ]
-        },
-        {
-            category: "Mikrobiologi",
-            kind: "body",
-            content: [
-                { no: "28", label: "Total Coliform", id: "total_coliform", keywords: ["Coliform", "total coliform"], satuan: "MPN/100ml", baku: "1.000" }
-            ]
-        },
-        {
-            category: "Lain-lain",
-            kind: "body",
-            content: [
-                { no: "29", label: "Debit", id: "debit", keywords: ["Flow", "Discharge"], satuan: "m3/dt", baku: "-" }
-            ]
-        }
-    ];
-}
-
-// persiapan data keyword untuk pdf engine
-function getAutoConfig() {
-    const data = initTableData();
-    
-    const filtered = data.filter(section => section.kind === "body");
-    
-    const config = filtered.flatMap(section => section.content.map(item => ({
-        id: item.id,
-        // Kita gabungkan ID dan Keywords menjadi satu array lowercase
-        keywords: [item.id.toLowerCase(), ...item.keywords.map(k => k.toLowerCase())]
-    })));
-
-    return config;
 }
 
 

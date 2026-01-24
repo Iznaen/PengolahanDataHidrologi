@@ -1,4 +1,23 @@
-export async function extractTextFromPDF(file, config) {
+export async function autoInputPDF(file, config)
+{
+    try
+    {
+        return await readPDF(file, config);
+    }
+    catch (error)
+    {
+        throw error;
+    }
+}
+
+// -----------------------------------------------------------
+// URUTAN FUNGSI:
+// 1. autoInputPDF(file) akan diimport ke kualitas-air.js
+// 2. autoInputPDF(file) butuh readPDF(file)
+// 3. readPDF(file) butuh sanitizePDF(teks)
+// -----------------------------------------------------------
+async function readPDF(file, config)
+{
     const reader = new FileReader();
 
     return new Promise((resolve, reject) => {
@@ -6,114 +25,121 @@ export async function extractTextFromPDF(file, config) {
             try
             {
                 const typedarray = new Uint8Array(reader.result);
-                
-                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-                const pdf = await pdfjsLib.getDocument(typedarray).promise;
-                let rawText = '';
-
-                // Ambil teks dari setiap halaman
-                for (let i = 1; i <= pdf.numPages; i++) {
-                    const page = await pdf.getPage(i);
-                    const textContent = await page.getTextContent();
-                    const pageText = textContent.items.map(item => item.str).join(' ');
-                    rawText += pageText + '\n';
-                }
-
-                let lowerText = rawText.toLowerCase();
-
-                // pembersihan karakter dan spasi
-                let cleaned = cleanText(lowerText);
-
-                // pembersihan dengan keyword
-                let contextCleaned = cleanKeywordContext(cleaned, config);
-
-                let finalStructuredText = structureTextByKeyword(contextCleaned, config);
-
-                resolve(finalStructuredText);
+                const rawText = await parsePDFContent(typedarray);
+                const cleanText = sanitizePDF(rawText);
+                const finalResult = structureByKeyword(cleanText, config);
+                resolve(finalResult);
             }
             catch (error)
             {
-                reject("Gagal membaca PDF: " + error.message);
+                reject("Gagal memproses konten PDF: " + error.message);
             }
         };
-
-        reader.onerror = () => reject("Gagal membaca file.");
+        reader.onerror = () => reject("Gagal membaca file buffer.");
         reader.readAsArrayBuffer(file);
     });
 }
 
-function cleanText(text) {
+
+// -----------------------------------------------------------
+// Sanitasi teks pdf yang diekstrak dilakukan di sini
+// Tugasnya: Memanggil semua fungsi yang berkaitan dengan
+// tugas sanitasi teks pdf
+// -----------------------------------------------------------
+function sanitizePDF(text)
+{
     if (!text) return "";
 
-    return text
-        .replace(/\r?\n|\r|\t/g, ' ') // Baris baru dan tab
-        .replace(/\s+/g, ' ')         // Spasi berlebih
-        .replace(/,/g, '.')           // Ganti , menjadi .
-        .replace(/[·*:]/g, '')        // Hapus karakter ·*:
-        .replace(/total/g, '')        // Hapus kata 'total'
-        .replace(/terlarut/g, '')     // Hapus kata 'terlarut'
-        .replace(/\([^)]*\)/g, '')    // Hapus kurung dan isinya, misal: (fe), (h2s)
-        .replace(/\s+/g, ' ')         // Rapikan spasi lagi setelah penghapusan
-        .trim();
+    let step_1 = removeSpecialChars(text);
+    let step_2 = removeTotal(step_1);
+    let step_3 = removeTerlarut(step_2);
+    let step_4 = removeParentheses(step_3);
+    let step_5 = collapseSpaces(step_4);
+
+    return step_5;
 }
 
-/**
- * Fungsi untuk membersihkan karakter sampah (angka urut, titik, SNI) 
- * yang muncul tepat sebelum keyword parameter.
- */
-function cleanKeywordContext(text, config) {
-    let cleanedText = text;
+// -----------------------------------------------------------
+// Fungsi khusus untuk berinteraksi dengan library PDF.js
+// Tugasnya: Membuka dokumen dan mengekstrak teks per halaman
+// -----------------------------------------------------------
+async function parsePDFContent(typedarray)
+{
+    // Inisialisasi PDF.js
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    config.forEach(param => {
-        param.keywords.forEach(key => {
-            const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const regex = new RegExp(`[^a-z()\\s][^a-z()]*\\s(?=${escapedKey})`, 'g');
-            
-            cleanedText = cleanedText.replace(regex, ' ');
-        });
-    });
+    const pdf = await pdfjsLib.getDocument(typedarray).promise;
+    let fullText = '';
 
-    const unitsAndTrash = [
-        /mg\/l/g, 
-        /pt-co unit/g, 
-        /mpn\s?\/\s?100\s?ml/g, 
-        /sni(\.\d+)?(\/\d+)?/g,
-        /sni/g
-    ];
+    for (let i = 1; i <= pdf.numPages; i++)
+    {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items.map(item => item.str).join(' ');
+        fullText += pageText + '\n';
+    }
 
-    unitsAndTrash.forEach(pattern => {
-        cleanedText = cleanedText.replace(pattern, ' ');
-    });
-
-    return cleanedText.replace(/\s+/g, ' ').trim();
+    return fullText.toLowerCase();
 }
 
-/**
- * Fungsi untuk menyisipkan baris baru setiap kali menemukan keyword.
- * Strategi: Langsung potong sebelum huruf pertama keyword yang cocok.
- */
-function structureTextByKeyword(text, config) {
+
+// -----------------------------------------------------------
+// Fungsi ini akan mengambil data dari tabel untuk dijadikan
+// keyword lalu mencocokkannya dengan teks pdf lalu
+// memasukkan baris baru (\n) di belakang keyword tersebut
+// -----------------------------------------------------------
+function structureByKeyword(text, config) 
+{
     let structuredText = text;
 
-    // Ambil semua keyword unik dari config
+    // 1. Ambil semua keyword dari config
     const allKeywords = config.flatMap(item => item.keywords);
+    console.log(allKeywords);
 
-    // Urutkan berdasarkan panjang karakter (descending) 
-    // agar keyword yang lebih panjang diproses duluan (mencegah salah potong)
-    allKeywords.sort((a, b) => b.length - a.length);
-
+    // 2. Iterasi setiap keyword
     allKeywords.forEach(key => {
-        // Escape karakter khusus regex jika ada di keyword
+        // Escape karakter khusus regex
         const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(escapedKey, 'g');
         
-        // Regex: Cari keyword tersebut
-        // Kita gunakan 'g' untuk global
-        const regex = new RegExp(`${escapedKey}`, 'g');
-        
-        // Tambahkan newline tepat sebelum keyword
+        // Ganti keyword menjadi: newline + keyword
         structuredText = structuredText.replace(regex, `\n${key}`);
     });
 
     return structuredText;
+}
+
+
+// -----------------------------------------------------------
+// Fungsi-fungsi tahapan sanitasi teks
+// -----------------------------------------------------------
+
+function collapseSpaces(text) 
+{
+    // Menghilangkan spasi yang berlebih menjadi spasi tunggal
+    return text.replace(/\s+/g, ' ').trim();
+}
+
+function removeSpecialChars(text) 
+{
+    // Menghilangkan karakter · * - :
+    return text.replace(/[·*\-:]/g, ' '); 
+}
+
+function removeTotal(text) 
+{
+    // Menghapus kata 'total' secara global
+    return text.replace(/total/g, '');
+}
+
+function removeTerlarut(text) 
+{
+    // Menghapus kata 'terlarut' secara global
+    return text.replace(/terlarut/g, '');
+}
+
+function removeParentheses(text) 
+{
+    // Menghapus tanda kurung () dan semua karakter yang ada di dalamnya
+    return text.replace(/\([^)]*\)/g, '');
 }
