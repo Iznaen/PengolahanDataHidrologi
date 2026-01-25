@@ -225,13 +225,13 @@ function initTableData() {
             kind: "body",
             content: [
                 { no: "1", label: "Temperatur", id: "temperatur", keywords: ["Suhu", "Temperature"], satuan: "°C", baku: "15-35" },
-                { no: "2", label: "Konduktivitas (DHL)", id: "konduktivitas", keywords: ["Conductivity", "EC", "dhl"], satuan: "umhos", baku: "-" },
-                { no: "3", label: "Kekeruhan (Turbidity)", id: "kekeruhan", keywords: ["Turbidity"], satuan: "mg/l", baku: "-" },
-                { no: "4", label: "Oksigen Terlarut (DO)", id: "oksigen", keywords: ["Dissolved Oxygen", "DO", "Oxygen"], satuan: "mg/l", baku: "1.7-19" },
-                { no: "5", label: "pH", id: "ph", keywords: ["Keasaman"], satuan: "-", baku: "0-14" },
-                { no: "6", label: "Zat Terlarut (TDS)", id: "tds", keywords: ["Total Dissolved Solids", "Zat Terlarut"], satuan: "mg/l", baku: "1000-2000" },
-                { no: "7", label: "Zat Tersuspensi (TSS)", id: "tss", keywords: ["Total Suspended Solids", "Zat Tersuspensi"], satuan: "mg/l", baku: "100-400" },
-                { no: "8", label: "Warna", id: "warna", keywords: ["Color"], satuan: "Pt-Co Unit", baku: "100" }
+                { no: "2", label: "Konduktivitas (DHL)", id: "konduktivitas", keywords: ["Conductivity", "EC", "dhl"], satuan: "umhos", baku: "" },
+                { no: "3", label: "Kekeruhan (Turbidity)", id: "kekeruhan", keywords: ["Turbidity"], satuan: "mg/l", baku: "" },
+                { no: "4", label: "Oksigen Terlarut (DO)", id: "oksigen", keywords: ["Dissolved Oxygen", "DO", "Oxygen"], satuan: "mg/l", baku: "4" },
+                { no: "5", label: "pH", id: "ph", keywords: ["Keasaman"], satuan: "", baku: "6-9" },
+                { no: "6", label: "Zat Terlarut (TDS)", id: "tds", keywords: ["Total Dissolved Solids", "Zat Terlarut"], satuan: "mg/l", baku: "1000" },
+                { no: "7", label: "Zat Tersuspensi (TSS)", id: "tss", keywords: ["Total Suspended Solids", "Zat Tersuspensi"], satuan: "mg/l", baku: "50" },
+                { no: "8", label: "Warna", id: "warna", keywords: ["Color"], satuan: "Pt-Co Unit", baku: "50" }
             ]
         },
         {
@@ -245,54 +245,41 @@ function initTableData() {
             category: "Nutrient",
             kind: "body",
             content: [
-                { no: "10", label: "Amoniak", id: "amoniak", keywords: ["amoniak", "Ammonia", "NH3"], satuan: "mg/l", baku: "0.5" },
-                { no: "11", label: "Nitrat (NO3)", id: "nitrat", keywords: ["Nitrate"], satuan: "mg/l", baku: "20.0" },
+                { no: "10", label: "Amoniak", id: "amoniak", keywords: ["amoniak", "Ammonia", "NH3"], satuan: "mg/l", baku: "0.2" },
+                { no: "11", label: "Nitrat (NO3)", id: "nitrat", keywords: ["Nitrate"], satuan: "mg/l", baku: "10" },
                 { no: "12", label: "Nitrit (NO2)", id: "nitrit", keywords: ["Nitrite"], satuan: "mg/l", baku: "0.06" },
                 { no: "13", label: "Fosfat", id: "fosfat", keywords: ["Surfactant"], satuan: "mg/l", baku: "0.2" },
                 { no: "14", label: "Deterjen", id: "deterjen", keywords: ["Surfactant", "MBAS", "detergen"], satuan: "mg/l", baku: "0.2" }
             ]
         },
         {
-            category: "Unsur Mikro",
+            category: "Kontaminan Logam Berat",
             kind: "body",
             content: [
-                { no: "15", label: "Arsen", id: "arsen", keywords: ["As"], satuan: "mg/l", baku: "0.05-0.1" },
-                { no: "16", label: "Besi Terlarut (Fe)", id: "besi", keywords: ["Iron"], satuan: "mg/l", baku: "-" },
-                { no: "17", label: "Mangan", id: "mangan", keywords: ["Mn"], satuan: "mg/l", baku: "-" },
-                { no: "18", label: "Tembaga", id: "tembaga", keywords: ["Cu", "Copper"], satuan: "mg/l", baku: "0.02-0.2" },
+                { no: "15", label: "Arsen", id: "arsen", keywords: ["As"], satuan: "mg/l", baku: "0.05" },
+                { no: "16", label: "Besi Terlarut (Fe)", id: "besi", keywords: ["Iron"], satuan: "mg/l", baku: "" },
+                { no: "17", label: "Mangan", id: "mangan", keywords: ["Mn"], satuan: "mg/l", baku: "0.4" },
+                { no: "18", label: "Tembaga", id: "tembaga", keywords: ["Cu", "Copper"], satuan: "mg/l", baku: "0.02" },
                 { no: "19", label: "Merkuri (Hg)", id: "merkuri", keywords: ["Mercury"], satuan: "mg/l", baku: "0.002" }
             ]
         },
         {
-            category: "Anorganik",
+            category: "Kontaminan Anorganik",
             kind: "body",
             content: [
-                { no: "20", label: "Sianida", id: "sianida", keywords: ["Cyanide", "CN"], satuan: "mg/l", baku: "0.02" },
-                { no: "21", label: "Fluorida", id: "fluorida", keywords: ["Fluoride", "F"], satuan: "mg/l", baku: "1.5" }
-            ]
-        },
-        {
-            category: "Organik",
-            kind: "body",
-            content: [
-                { no: "22", label: "COD", id: "cod", keywords: ["Chemical Oxygen Demand"], satuan: "mg/l", baku: "40-80" },
-                { no: "23", label: "BOD", id: "bod", keywords: ["Biochemical Oxygen Demand"], satuan: "mg/l", baku: "6-12" }
+                { no: "20", label: "Sianida (CN)", id: "sianida", keywords: ["Cyanide", "CN"], satuan: "mg/l", baku: "0.02" },
+                { no: "21", label: "Fluorida (F)", id: "fluorida", keywords: ["Fluoride", "F"], satuan: "mg/l", baku: "1.5" },
+                { no: "26", label: "Belerang (H2S)", id: "belerang", keywords: ["belerang", "Sulfide", "H2S"], satuan: "mg/l", baku: "0.002" }
             ]
         },
         {
             category: "Kontaminan Organik",
             kind: "body",
             content: [
-                { no: "24", label: "Minyak dan Lemak", id: "minyakDanLemak", keywords: ["Oil", "Grease", "minyak & lemak", "minyakLemak", "minyak dan lemak"], satuan: "mg/l", baku: "1-10" },
-                { no: "25", label: "Fenol", id: "fenol", keywords: ["Phenol"], satuan: "mg/l", baku: "0.01-0.02" },
-                { no: "26", label: "Belerang (H2S)", id: "belerang", keywords: ["belerang", "Sulfide", "H2S"], satuan: "mg/l", baku: "-" }
-            ]
-        },
-        {
-            category: "Ion",
-            kind: "body",
-            content: [
-                { no: "27", label: "Sulfida", id: "sulfida", keywords: ["Sulphide"], satuan: "mg/l", baku: "0.002" }
+                { no: "22", label: "COD", id: "cod", keywords: ["Chemical Oxygen Demand"], satuan: "mg/l", baku: "25" },
+                { no: "23", label: "BOD", id: "bod", keywords: ["Biochemical Oxygen Demand"], satuan: "mg/l", baku: "3" },
+                { no: "24", label: "Minyak dan Lemak", id: "minyakDanLemak", keywords: ["Oil", "Grease", "minyak & lemak", "minyakLemak", "minyak dan lemak"], satuan: "mg/l", baku: "1" },
+                { no: "25", label: "Fenol", id: "fenol", keywords: ["Phenol"], satuan: "mg/l", baku: "0.005" }
             ]
         },
         {
@@ -411,7 +398,7 @@ function createHeader() {
 
         <div class="form-header-bottom" id="formHeaderBottom">
             <div id="formBakuMutu">
-                <b>Baku Mutu Berdasarkan: PP No. 22 TAHUN 2022</b>
+                <b>Baku Mutu Berdasarkan:<br>PP Nomor 22 Tahun 2021 (Lampiran VI)<br>Kelas 2</b>
             </div>
 
             <div class="form-header-bottom-grid">
