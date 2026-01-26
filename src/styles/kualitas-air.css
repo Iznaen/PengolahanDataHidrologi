@@ -236,11 +236,11 @@
 }
 
 #formBakuMutu {
-    text-align: left;
     font-size: 0.9rem;
     color: var(--accent-teal, #319795);
     font-weight: 600;
     margin-bottom: 0.5rem;
+    text-align: center;
     width: 100%;
 }
 
