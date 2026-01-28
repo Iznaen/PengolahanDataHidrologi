@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "datahidrologi",
+  "productName": "data-hidrologi",
   "version": "0.1.0",
-  "identifier": "com.roguenine.datahidrologi",
+  "identifier": "com.roguenine.data-hidrologi",
   "build": {
     "frontendDist": "../src"
   },
@@ -10,7 +10,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "Pengolahan Data Hidrologi",
+        "title": "data-hidrologi",
         "width": 800,
         "height": 600
       }
