@@ -98,17 +98,23 @@
     <div class="form-footer">
         <div class="calculation-grid">
             <div class="footer-card">
-                <div class="card-header">Metode Indeks Pencemaran (IP)</div>
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>Metode Indeks Pencemaran (IP)</span>
+                    <button id="btnHitungIP" type="button" class="btn-xs" style="background: #fff; color: #2c3e50; border: none; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                        <i class="fas fa-calculator"></i> Hitung
+                    </button>
+                </div>
                 <div class="card-body">
                     <input type="text" id="metodeIndeksPencemaran" placeholder="Nilai IP" readonly>
                     <input type="text" id="statusIP" placeholder="Status IP" readonly>
                 </div>
             </div>
-            <div class="footer-card">
-                <div class="card-header">Metode STORET</div>
+
+            <div class="footer-card" style="opacity: 0.5; pointer-events: none;">
+                <div class="card-header">Metode STORET (Next Phase)</div>
                 <div class="card-body">
-                    <input type="text" id="metodeStoret" placeholder="Skor STORET" readonly>
-                    <input type="text" id="statusStoret" placeholder="Status STORET" readonly>
+                    <input type="text" id="metodeStoret" placeholder="Menunggu Multi-Sampel" readonly disabled>
+                    <input type="text" id="statusStoret" placeholder="-" readonly disabled>
                 </div>
             </div>
         </div>

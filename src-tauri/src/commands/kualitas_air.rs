@@ -1,6 +1,7 @@
 use tauri::{State, command};
 use sqlx::SqlitePool;
 use crate::models::kualitas_air::KualitasAirRecord;
+use crate::services;
 
 // Command ini akan dipanggil dari JS dengan nama: submit_kualitas_air
 #[command]
@@ -97,4 +98,16 @@ pub async fn submit_kualitas_air(
         .map_err(|e| format!("Gagal menyimpan data ke database: {}", e))?;
 
     Ok("Data berhasil disimpan ke database Local!".to_string())
+}
+
+
+/// Command untuk menghitung IP secara Real-time (Preview)
+/// Dipanggil saat user klik tombol "Hitung IP"
+#[command]
+pub async fn calculate_ip_preview(data: KualitasAirRecord) -> Result<(f64, String), String> {
+    // Panggil logika murni di services/ip_calc.rs
+    let result = services::ip_calc::calculate_ip(&data);
+    
+    // Kembalikan tuple (Nilai, Status) ke Frontend
+    Ok(result)
 }

@@ -28,7 +28,8 @@ pub fn run() {
         })
         // PERHATIKAN BAGIAN INI:
         .invoke_handler(tauri::generate_handler![
-            commands::kualitas_air::submit_kualitas_air
+            commands::kualitas_air::submit_kualitas_air,
+            commands::kualitas_air::calculate_ip_preview
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
