@@ -1,5 +1,5 @@
 use crate::models::kualitas_air::KualitasAirRecord;
-use regex::Regex; // Pastikan regex digunakan
+use regex::Regex;
 
 pub fn parse_pdf(file_path: String) -> Result<KualitasAirRecord, String> {
     println!("📂 Membaca PDF dari: {}", file_path);
@@ -29,16 +29,13 @@ pub fn parse_pdf(file_path: String) -> Result<KualitasAirRecord, String> {
     let lines: Vec<&str> = content.lines().collect();
 
     // --- STRATEGI 1: PENCARIAN METADATA GLOBAL ---
-    // Kita cari baris yang mengandung pola unik, dimanapun posisinya.
     
     for line in &lines {
         let text = line.trim();
         if text.is_empty() { continue; }
 
         // 1. CARI LOKASI (Keyword: "AWLR")
-        // Asumsi: Nama pos selalu mengandung "AWLR" atau diawali dengan ": AWLR"
         if text.contains("AWLR") {
-            // Bersihkan tanda titik dua di awal jika ada
             let val = text.replace(":", "").trim().to_string();
             println!("[META] Lokasi Ditemukan: {}", val);
             data.nama_pos = Some(val);
@@ -46,29 +43,17 @@ pub fn parse_pdf(file_path: String) -> Result<KualitasAirRecord, String> {
 
         // 2. CARI KOORDINAT (Keyword: "S:" dan "E:" dan "°")
         if text.contains("S:") && text.contains("E:") && text.contains("°") {
-             // Biasanya format "S: ... E: ...". Ambil mentah saja.
-             let val = text.replace("Titik Koordinat", "").replace(":", " ").trim().to_string(); 
-             // Kita rapikan sedikit agar tidak double colon, tapi raw string juga oke.
-             // Ambil string asli saja biar aman formatnya
+             // FIX: Menghapus variabel 'val' yang tidak terpakai
              let clean_coord = text.replace("Titik Koordinat", "").trim().to_string();
              println!("[META] Koordinat Ditemukan: {}", clean_coord);
              data.koordinat_geografis = Some(clean_coord);
         }
 
         // 3. CARI TANGGAL (Pola Regex)
-        // Kita cari format tanggal Indonesia: "19 September 2025"
-        // Regex: Angka(1-2 digit) Spasi Huruf(3+ digit) Spasi Angka(4 digit)
         if data.tanggal_sampling.is_none() {
-            // Regex sederhana untuk tanggal Indo
-            // Menangkap: "19 September 2025" atau "19 Sep 2025"
             let re_date = Regex::new(r"(\d{1,2})\s+([A-Za-z]{3,})\s+(\d{4})").unwrap();
             
             if let Some(caps) = re_date.captures(text) {
-                // Pastikan ini bukan tanggal surat (biasanya di footer/header lain), 
-                // tapi karena kita butuh tanggal sampling, prioritas:
-                // Jika baris mengandung "Tgl sampling" -> Ambil
-                // Jika baris mengandung "Tgl Penerimaan" -> Ambil (Fallback)
-                
                 let is_sampling = text.contains("Tgl sampling");
                 let is_penerimaan = text.contains("Tgl Penerimaan");
                 
@@ -87,7 +72,6 @@ pub fn parse_pdf(file_path: String) -> Result<KualitasAirRecord, String> {
 
 
     // --- STRATEGI 2: PARAMETER (LOGIKA SNI) ---
-    // (Bagian ini tidak berubah karena sudah berjalan baik)
     for line in &lines {
         let text = line.trim();
         if text.is_empty() { continue; }
