@@ -1,16 +1,21 @@
-use tauri::{State, command, AppHandle}; // Tambah AppHandle
+use tauri::{State, command, AppHandle}; 
 use sqlx::SqlitePool;
 use crate::models::kualitas_air::KualitasAirRecord;
 use crate::services;
-use tauri_plugin_dialog::DialogExt; // Tambah ini untuk fitur Dialog
+use tauri_plugin_dialog::DialogExt; 
 
-// Command ini akan dipanggil dari JS dengan nama: submit_kualitas_air
+// --- COMMAND 1: SIMPAN DATA (DENGAN DEBUGGING LENGKAP) ---
 #[command]
 pub async fn submit_kualitas_air(
     pool: State<'_, SqlitePool>, 
     data: KualitasAirRecord
 ) -> Result<String, String> {
+
+    // 1. Log Start (Mata-mata Backend)
+    println!("🦀 [RUST] 1. Request Diterima. Mulai proses SQL...");
+    println!("      -> Nama Pos: {:?}", data.nama_pos);
     
+    // 2. Definisi SQL
     let sql = "
         INSERT INTO kualitas_air (
             nama_pos, das, wilayah_sungai, provinsi, kabupaten, tahun,
@@ -36,7 +41,8 @@ pub async fn submit_kualitas_air(
         )
     ";
 
-    sqlx::query(sql)
+    // 3. Eksekusi Query dengan Penanganan Error Eksplisit (Match Block)
+    let result = sqlx::query(sql)
         .bind(&data.nama_pos)
         .bind(&data.das)
         .bind(&data.wilayah_sungai)
@@ -95,23 +101,32 @@ pub async fn submit_kualitas_air(
         .bind(&data.nilai_storet)
         .bind(&data.status_storet)
         .execute(pool.inner())
-        .await
-        .map_err(|e| format!("Gagal menyimpan data ke database: {}", e))?;
+        .await;
 
-    Ok("Data berhasil disimpan ke database Local!".to_string())
+    // 4. Cek Hasil dan Lapor ke Terminal
+    match result {
+        Ok(_) => {
+            println!("✅ [RUST] 2. Query Berhasil! Data tersimpan.");
+            Ok("Data berhasil disimpan ke database Local!".to_string())
+        }
+        Err(e) => {
+            println!("❌ [RUST] 2. QUERY GAGAL: {:?}", e);
+            // Kembalikan error detail agar bisa dibaca di frontend
+            Err(format!("Gagal menyimpan data: {}", e))
+        }
+    }
 }
 
 
-/// Command untuk menghitung IP secara Real-time (Preview)
+// --- COMMAND 2: HITUNG IP (TETAP ADA) ---
 #[command]
 pub async fn calculate_ip_preview(data: KualitasAirRecord) -> Result<(f64, String), String> {
     let result = services::ip_calc::calculate_ip(&data);
     Ok(result)
 }
 
-// --- FUNGSI BARU DI BAWAH INI ---
 
-/// Command Baru: Membuka Dialog File System via Rust lalu memparsingnya
+// --- COMMAND 3: IMPORT PDF (TETAP ADA) ---
 #[command]
 pub async fn import_pdf(app: AppHandle) -> Result<KualitasAirRecord, String> {
     // 1. Buka Dialog Native
@@ -123,18 +138,27 @@ pub async fn import_pdf(app: AppHandle) -> Result<KualitasAirRecord, String> {
     // 2. Cek Hasil Pilihan
     match file_path {
         Some(path) => {
-            // Konversi path ke String
             let path_str = path.to_string();
-            
             // Panggil service pdf_engine
-            // (Pastikan pdf_engine.rs Anda sudah berisi versi Scan Only yang kita bahas sebelumnya)
             let result = services::pdf_engine::parse_pdf(path_str)?;
-            
             Ok(result)
         },
         None => {
-            // User menekan Cancel di jendela dialog
             Err("Pemilihan file dibatalkan".to_string())
         }
     }
+}
+
+
+// --- COMMAND 4: AMBIL SEMUA DATA (BARU) ---
+#[command]
+pub async fn get_all_kualitas_air(pool: State<'_, SqlitePool>) -> Result<Vec<KualitasAirRecord>, String> {
+    let sql = "SELECT * FROM kualitas_air ORDER BY id DESC";
+    
+    let rows = sqlx::query_as::<_, KualitasAirRecord>(sql)
+        .fetch_all(pool.inner())
+        .await
+        .map_err(|e| format!("Gagal mengambil data: {}", e))?;
+
+    Ok(rows)
 }

@@ -158,10 +158,21 @@ async function calculateIP() {
 
 async function saveData() {
     const payload = getFormData();
+    console.log("📦 [JS] Payload yang akan dikirim:", payload); // Debug 2
+
+    // Validasi sederhana: Cek apakah payload kosong semua?
+    if (!payload.nama_pos && !payload.sampleDate) {
+        console.warn("⚠️ [JS] Payload terlihat kosong!");
+    }
+
     try {
         const response = await invoke('submit_kualitas_air', { data: payload });
+        console.log("✅ [JS] Response dari Rust:", response); // Debug 3
         alert("✅ SUKSES: " + response);
-    } catch (error) { console.error(error); alert("❌ ERROR: " + error); }
+    } catch (error) { 
+        console.error("❌ [JS] Error saat invoke:", error); // Debug 4
+        alert("❌ ERROR: " + error); 
+    }
 }
 
 function initFlatpicker() {
