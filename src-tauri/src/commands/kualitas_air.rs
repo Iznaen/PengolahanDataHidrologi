@@ -1,7 +1,8 @@
-use tauri::{State, command};
+use tauri::{State, command, AppHandle}; // Tambah AppHandle
 use sqlx::SqlitePool;
 use crate::models::kualitas_air::KualitasAirRecord;
 use crate::services;
+use tauri_plugin_dialog::DialogExt; // Tambah ini untuk fitur Dialog
 
 // Command ini akan dipanggil dari JS dengan nama: submit_kualitas_air
 #[command]
@@ -102,12 +103,38 @@ pub async fn submit_kualitas_air(
 
 
 /// Command untuk menghitung IP secara Real-time (Preview)
-/// Dipanggil saat user klik tombol "Hitung IP"
 #[command]
 pub async fn calculate_ip_preview(data: KualitasAirRecord) -> Result<(f64, String), String> {
-    // Panggil logika murni di services/ip_calc.rs
     let result = services::ip_calc::calculate_ip(&data);
-    
-    // Kembalikan tuple (Nilai, Status) ke Frontend
     Ok(result)
+}
+
+// --- FUNGSI BARU DI BAWAH INI ---
+
+/// Command Baru: Membuka Dialog File System via Rust lalu memparsingnya
+#[command]
+pub async fn import_pdf(app: AppHandle) -> Result<KualitasAirRecord, String> {
+    // 1. Buka Dialog Native
+    let file_path = app.dialog()
+        .file()
+        .add_filter("PDF Files", &["pdf"])
+        .blocking_pick_file();
+
+    // 2. Cek Hasil Pilihan
+    match file_path {
+        Some(path) => {
+            // Konversi path ke String
+            let path_str = path.to_string();
+            
+            // Panggil service pdf_engine
+            // (Pastikan pdf_engine.rs Anda sudah berisi versi Scan Only yang kita bahas sebelumnya)
+            let result = services::pdf_engine::parse_pdf(path_str)?;
+            
+            Ok(result)
+        },
+        None => {
+            // User menekan Cancel di jendela dialog
+            Err("Pemilihan file dibatalkan".to_string())
+        }
+    }
 }

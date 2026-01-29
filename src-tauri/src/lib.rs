@@ -8,6 +8,7 @@ use tauri::Manager;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
             let handle = app.handle().clone();
@@ -29,7 +30,8 @@ pub fn run() {
         // PERHATIKAN BAGIAN INI:
         .invoke_handler(tauri::generate_handler![
             commands::kualitas_air::submit_kualitas_air,
-            commands::kualitas_air::calculate_ip_preview
+            commands::kualitas_air::calculate_ip_preview,
+            commands::kualitas_air::import_pdf
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
