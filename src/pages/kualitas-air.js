@@ -1,32 +1,33 @@
 const { invoke } = window.__TAURI__.core;
 
-/**
- * Fungsi inisialisasi yang dipanggil oleh main.js 
- * setelah HTML kualitas-air.html berhasil dimuat.
- */
 export function initKualitasAir() {
     console.log("🚀 Module Kualitas Air dimuat.");
     initFlatpicker();
     
+    // Listener Tombol Simpan
     const saveBtn = document.getElementById('saveBtn');
     if (saveBtn) {
         saveBtn.addEventListener('click', saveData);
     }
+
+    // Listener Tombol Hitung IP (Baru)
+    const btnHitungIP = document.getElementById('btnHitungIP');
+    if (btnHitungIP) {
+        btnHitungIP.addEventListener('click', calculateIP);
+    }
 }
 
 /**
- * Mengambil data dari form dan mengirimnya ke Backend Rust
+ * Fungsi Helper: Mengambil semua data dari form menjadi Object JSON
+ * Digunakan oleh Hitung IP dan Simpan Data
  */
-async function saveData() {
-    // Helper: Ambil value input. Return null jika kosong.
-    // Otomatis convert ke Float jika itu angka.
+function getFormData() {
     const getVal = (id) => {
         const el = document.getElementById(id);
         if (!el) return null;
         const val = el.value.trim();
         if (val === "") return null;
 
-        // Daftar ID yang BUKAN angka (tetap String)
         const stringFields = [
             'namaPos', 'das', 'wilayahSungai', 'provinsi', 'kabupaten', 
             'elevasiPos', 'pelaksana', 'kecamatan', 'laboratorium', 
@@ -37,23 +38,19 @@ async function saveData() {
         if (stringFields.includes(id)) {
             return val;
         } else {
-            // Coba parse ke float
-            const num = parseFloat(val);
+            const num = parseFloat(val.replace(',', '.')); // Handle koma desimal indo
             return isNaN(num) ? null : num;
         }
     };
 
-    // Mapping Data JS -> Rust Struct
-    // Key (kiri) = Nama field di struct Rust
-    // getVal('id') = ID di HTML
-    const payload = {
+    return {
         // Metadata
         nama_pos: getVal('namaPos'),
         das: getVal('das'),
         wilayah_sungai: getVal('wilayahSungai'),
         provinsi: getVal('provinsi'),
         kabupaten: getVal('kabupaten'),
-        tahun: getVal('tahun'), // Rust i32, JS Number oke
+        tahun: getVal('tahun'), 
         elevasi_pos: getVal('elevasiPos'),
         pelaksana: getVal('pelaksana'),
         kecamatan: getVal('kecamatan'),
@@ -66,7 +63,7 @@ async function saveData() {
         tanggal_sampling: getVal('sampleDate'),
         waktu_sampling: getVal('sampleTime'),
 
-        // Parameter Fisika/Kimia
+        // Parameter
         temperatur: getVal('temperatur'),
         konduktivitas: getVal('konduktivitas'),
         kekeruhan: getVal('kekeruhan'),
@@ -93,26 +90,67 @@ async function saveData() {
         bod: getVal('bod'),
         fenol: getVal('fenol'),
         debit: getVal('debit'),
-
-        // Field dengan penamaan khusus (CamelCase di JS -> SnakeCase di Rust via Serde)
         minyakDanLemak: getVal('minyakDanLemak'), 
         totalColiform: getVal('totalColiform'),
 
-        // Hasil Kalkulasi
+        // Hasil Kalkulasi (Ambil dari field readonly jika ada isinya)
         nilaiIp: getVal('metodeIndeksPencemaran'),
         statusIp: getVal('statusIP'),
         nilaiStoret: getVal('metodeStoret'),
         statusStoret: getVal('statusStoret')
     };
+}
 
-    console.log("📤 Mengirim data:", payload);
+/**
+ * Fitur 1: Hitung IP (Preview)
+ */
+async function calculateIP() {
+    console.log("🔄 Menghitung IP...");
+    const payload = getFormData();
 
     try {
-        // Panggil command Rust 'submit_kualitas_air'
+        // Panggil command Rust 'calculate_ip_preview'
+        // Return tuple: [Score, Status]
+        const [score, status] = await invoke('calculate_ip_preview', { data: payload });
+        
+        // Tampilkan ke UI
+        const inputNilai = document.getElementById('metodeIndeksPencemaran');
+        const inputStatus = document.getElementById('statusIP');
+        
+        if (inputNilai) inputNilai.value = score;
+        if (inputStatus) inputStatus.value = status;
+
+        // Visual Feedback (Warna status)
+        if (status.includes("Baik") || status.includes("Memenuhi")) {
+            inputStatus.style.color = "green";
+        } else if (status.includes("Ringan")) {
+            inputStatus.style.color = "#f39c12"; // Orange
+        } else {
+            inputStatus.style.color = "red";
+        }
+
+        // alert(`✅ Hasil IP: ${score} (${status})`); // Opsional
+    } catch (error) {
+        console.error("Gagal menghitung:", error);
+        alert("❌ Gagal menghitung IP: " + error);
+    }
+}
+
+/**
+ * Fitur 2: Simpan Data
+ */
+async function saveData() {
+    // Pastikan user menghitung IP dulu (Opsional, atau bisa auto-calc)
+    // Di sini kita ambil data TERBARU dari form (termasuk hasil hitung IP jika sudah diisi fieldnya)
+    const payload = getFormData();
+
+    console.log("📤 Mengirim data simpan:", payload);
+
+    try {
         const response = await invoke('submit_kualitas_air', { data: payload });
         alert("✅ SUKSES: " + response);
     } catch (error) {
-        console.error("❌ Gagal menyimpan:", error);
+        console.error("Gagal menyimpan:", error);
         alert("❌ ERROR: " + error);
     }
 }
@@ -126,7 +164,5 @@ function initFlatpicker() {
             dateFormat: "H:i", 
             time_24hr: true 
         });
-    } else {
-        console.warn("Library Flatpickr belum dimuat.");
     }
 }
