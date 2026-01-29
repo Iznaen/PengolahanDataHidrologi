@@ -64,25 +64,37 @@ function fillForm(data) {
         if (el && val !== null && val !== undefined) {
             el.value = val;
             
-            // Visual feedback (opsional: kedip kuning sebentar)
+            // Trigger event 'input' agar library pihak ketiga (seperti Flatpickr) merespons perubahan value
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+            
+            // Visual feedback
             el.style.backgroundColor = "#fff3cd";
             setTimeout(() => { el.style.backgroundColor = ""; }, 1000);
         }
     };
 
-    // --- MAPPING FIELD RUST -> HTML ID ---
+    // --- A. MAPPING METADATA (HEADER SURAT) ---
+    // Menggunakan key snake_case sesuai output Rust
+    setVal('namaPos', data.nama_pos);
+    setVal('koordinatGeografis', data.koordinat_geografis);
     
-    // A. Parameter Fisika
+    // Khusus Tanggal: Format dari Rust sudah "dd-mm-yyyy" yang cocok dengan Flatpickr
+    setVal('sampleDate', data.tanggal_sampling);
+
+
+    // --- B. MAPPING PARAMETER KUALITAS AIR ---
+    
+    // Parameter Fisika
     setVal('temperatur', data.temperatur);
-    setVal('konduktivitas', data.konduktivitas); // DHL
+    setVal('konduktivitas', data.konduktivitas);
     setVal('kekeruhan', data.kekeruhan);
     setVal('tds', data.tds);
     setVal('tss', data.tss);
     setVal('warna', data.warna);
 
-    // B. Parameter Kimia
+    // Parameter Kimia
     setVal('ph', data.ph);
-    setVal('oksigen', data.oksigen); // DO
+    setVal('oksigen', data.oksigen);
     setVal('bod', data.bod);
     setVal('cod', data.cod);
     setVal('amoniak', data.amoniak);
@@ -90,10 +102,11 @@ function fillForm(data) {
     setVal('nitrit', data.nitrit);
     setVal('fosfat', data.fosfat);
     setVal('deterjen', data.deterjen);
-    setVal('minyakDanLemak', data.minyakDanLemak); // Perhatikan beda snake_case ke camelCase
+    // Note: Rust mengembalikan camelCase untuk field ini (sesuai log sebelumnya)
+    setVal('minyakDanLemak', data.minyakDanLemak); 
     setVal('fenol', data.fenol);
     
-    // C. Parameter Logam & Anorganik
+    // Parameter Logam & Anorganik
     setVal('klorida', data.klorida);
     setVal('belerang', data.belerang);
     setVal('sianida', data.sianida);
@@ -104,11 +117,8 @@ function fillForm(data) {
     setVal('tembaga', data.tembaga);
     setVal('merkuri', data.merkuri);
 
-    // D. Mikrobiologi
+    // Mikrobiologi
     setVal('totalColiform', data.totalColiform);
-
-    // Catatan: Metadata (Nama Pos, dll) belum diekstrak oleh Rust, 
-    // jadi belum kita map di sini.
 }
 
 // --- FUNGSI STANDAR LAINNYA ---
