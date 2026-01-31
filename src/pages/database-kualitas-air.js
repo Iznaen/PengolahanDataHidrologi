@@ -519,10 +519,17 @@ function createCardElement(record, index) {
     // Delete button
     const deleteBtn = card.querySelector('.db-card-btn-delete');
     if (deleteBtn) {
-        deleteBtn.addEventListener('click', (e) => {
+        deleteBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
             console.log("Delete button clicked for record:", record.id || index);
-            deleteRecord(record.id, card);
+            if (await window.confirm("Yakin ingin menghapus?"))
+            {
+                await deleteRecord(record.id, card);
+            }
+            else
+            {
+                alert("Penghapusan entry dibatalkan.");
+            }
         });
     }
     
@@ -544,14 +551,9 @@ async function deleteRecord(recordId, cardElement) {
         alert("❌ Gagal menghapus: ID data tidak valid");
         return;
     }
-    
-    // Confirm deletion
-    const confirmed = confirm(`Apakah Anda yakin ingin menghapus data ini? (ID: ${recordId})\n\nTindakan ini tidak dapat dibatalkan.`);
-    if (!confirmed) {
-        return;
-    }
-    
-    try {
+
+    try
+    {
         console.log(`🗑️  Deleting record ID: ${recordId}`);
         
         // Call Rust backend to delete
@@ -589,8 +591,9 @@ async function deleteRecord(recordId, cardElement) {
             alert(`✅ Data berhasil dihapus\n${result}`);
             
         }, 300);
-        
-    } catch (error) {
+    }
+    catch (error)
+    {
         console.error("❌ Error deleting record:", error);
         alert(`❌ Gagal menghapus data:\n${error}`);
     }
@@ -628,7 +631,7 @@ function generateDummyData() {
     ];
     
     const locations = [
-        'Pos AWLR Citarum',
+        'Pos AWLR Tamboli',
         'Pos DAS Bengawan Solo',
         'Pos Kali Code',
         'Pos Sungai Brantas',
