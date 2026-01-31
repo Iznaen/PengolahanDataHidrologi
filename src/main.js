@@ -1,9 +1,11 @@
 // Import fungsi inisialisasi dari modul halaman
 import { initKualitasAir } from './pages/kualitas-air.js';
+import { initDatabaseKualitasAir } from './pages/database-kualitas-air.js';
 
 // Mapping: ID Halaman -> Fungsi Init JS-nya
 const pageScripts = {
     'kualitas-air': initKualitasAir,
+    'database-kualitas-air': initDatabaseKualitasAir,
     // 'dashboard': initDashboard, // Nanti jika sudah ada
 };
 
@@ -64,6 +66,12 @@ window.addEventListener("DOMContentLoaded", () => {
         // Update active class
         document.querySelectorAll('.nav-link').forEach(btn => btn.classList.remove('active'));
         document.getElementById('nav-dashboard').classList.add('active');
+    });
+
+    // Listener Menu Database Kualitas Air
+    document.getElementById("nav-ruang-data")?.addEventListener("click", () => {
+        console.log("📊 Navigasi ke Database Kualitas Air");
+        loadPage("database-kualitas-air");
     });
 
     // Default Load: Buka Dashboard atau Kualitas Air saat pertama buka

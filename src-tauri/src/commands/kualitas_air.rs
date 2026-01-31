@@ -162,3 +162,29 @@ pub async fn get_all_kualitas_air(pool: State<'_, SqlitePool>) -> Result<Vec<Kua
 
     Ok(rows)
 }
+
+// --- COMMAND 5: HAPUS DATA BERDASARKAN ID ---
+#[command]
+pub async fn delete_kualitas_air(
+    pool: State<'_, SqlitePool>,
+    id: i64
+) -> Result<String, String> {
+    println!("🦀 [RUST DELETE] Mencoba menghapus record dengan ID: {}", id);
+    
+    let sql = "DELETE FROM kualitas_air WHERE id = ?";
+    
+    let result = sqlx::query(sql)
+        .bind(id)
+        .execute(pool.inner())
+        .await
+        .map_err(|e| format!("Gagal menghapus data: {}", e))?;
+    
+    let rows_affected = result.rows_affected();
+    println!("✅ [RUST DELETE] Berhasil menghapus {} record", rows_affected);
+    
+    if rows_affected == 0 {
+        Err(format!("Data dengan ID {} tidak ditemukan", id))
+    } else {
+        Ok(format!("Data berhasil dihapus (ID: {})", id))
+    }
+}
