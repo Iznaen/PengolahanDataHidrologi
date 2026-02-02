@@ -1,0 +1,45 @@
+name: Build Windows Exe
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: # Agar bisa dijalankan manual lewat tab Actions
+
+jobs:
+  build-tauri:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [windows-latest]
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install frontend dependencies
+        run: npm install
+
+      - name: Build Tauri App
+        # Perintah ini akan mendownload semua crate Rust dan membuild .exe
+        run: npm run tauri build
+
+      - name: Upload Artifacts (EXE)
+        uses: actions/upload-artifact@v4
+        with:
+          name: DataHidrologi-Windows-Installer
+          # Path default output Tauri v2 untuk Windows (NSIS)
+          path: src-tauri/target/release/bundle/nsis/*.exe
+          if-no-files-found: error

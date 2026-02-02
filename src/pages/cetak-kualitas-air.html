@@ -1,0 +1,100 @@
+<div id="laporan-cetak-container">
+    <div class="laporan-header">
+        <h2>Laporan Hasil Uji Kualitas Air</h2>
+        <p>Sistem Data Hidrologi & Kualitas Air</p>
+    </div>
+
+    <div class="laporan-grid">
+        <div class="laporan-col">
+            <div class="laporan-field">
+                <label>Nama Pos / Lokasi:</label>
+                <input type="text" id="lap_namaPos" readonly>
+            </div>
+            <div class="laporan-field">
+                <label>Wilayah Sungai:</label>
+                <input type="text" id="lap_wilayahSungai" readonly>
+            </div>
+            <div class="laporan-field">
+                <label>Provinsi:</label>
+                <input type="text" id="lap_provinsi" readonly>
+            </div>
+            <div class="laporan-field">
+                <label>Kabupaten:</label>
+                <input type="text" id="lap_kabupaten" readonly>
+            </div>
+        </div>
+
+        <div class="laporan-col">
+            <div class="laporan-field">
+                <label>Tanggal Sampling:</label>
+                <input type="text" id="lap_tanggal" readonly>
+            </div>
+            <div class="laporan-field">
+                <label>Waktu Sampling:</label>
+                <input type="text" id="lap_waktu" readonly>
+            </div>
+            <div class="laporan-field">
+                <label>Pelaksana / Lab:</label>
+                <input type="text" id="lap_pelaksana" readonly>
+            </div>
+            <div class="laporan-field">
+                <label>Koordinat:</label>
+                <input type="text" id="lap_koordinat" readonly>
+            </div>
+        </div>
+    </div>
+
+    <table class="laporan-table">
+        <thead>
+            <tr>
+                <th width="5%">No</th>
+                <th width="45%">Parameter</th>
+                <th width="15%">Satuan</th>
+                <th width="20%">Hasil Uji</th>
+                <th width="15%">Baku Mutu</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="laporan-category-row"><td colspan="5">I. PARAMETER FISIKA</td></tr>
+            <tr><td class="text-center">1</td><td>Temperatur</td><td class="text-center">°C</td><td><input type="text" id="lap_temperatur" class="table-input-hasil" readonly></td><td class="text-center">Dev 3</td></tr>
+            <tr><td class="text-center">2</td><td>TDS (Zat Padat Terlarut)</td><td class="text-center">mg/L</td><td><input type="text" id="lap_tds" class="table-input-hasil" readonly></td><td class="text-center">1000</td></tr>
+            <tr><td class="text-center">3</td><td>TSS (Zat Padat Tersuspensi)</td><td class="text-center">mg/L</td><td><input type="text" id="lap_tss" class="table-input-hasil" readonly></td><td class="text-center">50</td></tr>
+            <tr><td class="text-center">4</td><td>Warna</td><td class="text-center">Pt-Co</td><td><input type="text" id="lap_warna" class="table-input-hasil" readonly></td><td class="text-center">50</td></tr>
+
+            <tr class="laporan-category-row"><td colspan="5">II. PARAMETER KIMIA</td></tr>
+            <tr><td class="text-center">5</td><td>pH</td><td class="text-center">-</td><td><input type="text" id="lap_ph" class="table-input-hasil" readonly></td><td class="text-center">6 - 9</td></tr>
+            <tr><td class="text-center">6</td><td>BOD</td><td class="text-center">mg/L</td><td><input type="text" id="lap_bod" class="table-input-hasil" readonly></td><td class="text-center">3</td></tr>
+            <tr><td class="text-center">7</td><td>COD</td><td class="text-center">mg/L</td><td><input type="text" id="lap_cod" class="table-input-hasil" readonly></td><td class="text-center">25</td></tr>
+            <tr><td class="text-center">8</td><td>DO (Oksigen Terlarut)</td><td class="text-center">mg/L</td><td><input type="text" id="lap_oksigen" class="table-input-hasil" readonly></td><td class="text-center">4</td></tr>
+            <tr><td class="text-center">9</td><td>Nitrat (NO3)</td><td class="text-center">mg/L</td><td><input type="text" id="lap_nitrat" class="table-input-hasil" readonly></td><td class="text-center">10</td></tr>
+            <tr><td class="text-center">10</td><td>Fosfat</td><td class="text-center">mg/L</td><td><input type="text" id="lap_fosfat" class="table-input-hasil" readonly></td><td class="text-center">0.2</td></tr>
+
+            <tr class="laporan-category-row"><td colspan="5">III. MIKROBIOLOGI</td></tr>
+            <tr><td class="text-center">11</td><td>Total Coliform</td><td class="text-center">MPN</td><td><input type="text" id="lap_totalColiform" class="table-input-hasil" readonly></td><td class="text-center">1000</td></tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top: 20px; border: 1px solid #2c3e50; padding: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <strong>Indeks Pencemaran (IP):</strong> 
+            <input type="text" id="lap_nilaiIp" style="width: 60px; font-weight: bold; text-align: center; display: inline-block;" readonly>
+        </div>
+        <div>
+            <strong>Status Mutu:</strong>
+            <input type="text" id="lap_statusIp" style="width: 150px; font-weight: bold; text-align: right; display: inline-block;" readonly>
+        </div>
+    </div>
+
+    <div class="laporan-footer">
+        <div class="ttd-box">
+            <p>Mengetahui,<br>Kepala Unit</p>
+            <div class="ttd-space"></div>
+            <p class="ttd-name">( ..................................... )</p>
+        </div>
+        <div class="ttd-box">
+            <p>Petugas Sampling</p>
+            <div class="ttd-space"></div>
+            <p class="ttd-name">( ..................................... )</p>
+        </div>
+    </div>
+</div>
