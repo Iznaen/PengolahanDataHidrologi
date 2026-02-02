@@ -2,7 +2,7 @@ use tauri::{State, command, AppHandle};
 use sqlx::SqlitePool;
 use crate::models::kualitas_air::KualitasAirRecord;
 use crate::services;
-use tauri_plugin_dialog::DialogExt; 
+use tauri_plugin_dialog::DialogExt;
 
 // --- COMMAND 1: SIMPAN DATA (DENGAN DEBUGGING LENGKAP) ---
 #[command]
@@ -186,5 +186,44 @@ pub async fn delete_kualitas_air(
         Err(format!("Data dengan ID {} tidak ditemukan", id))
     } else {
         Ok(format!("Data berhasil dihapus (ID: {})", id))
+    }
+}
+
+// --- COMMAND 6: EXPORT CSV ---
+#[command]
+pub async fn export_kualitas_air_csv
+(
+    app: AppHandle,
+    pool: State<'_, SqlitePool>
+) -> Result<String, String>
+{
+    let file_path = app.dialog()
+        .file()
+        .add_filter("CSV Files", &["csv"])
+        .set_file_name("data_kualitas_air.csv")
+        .blocking_save_file();
+
+    match file_path
+    {
+        Some(path) =>
+        {
+            let path_str = path.to_string();
+
+            // ambil semua data dari DB
+            let sql = "SELECT * FROM kualitas_air ORDER BY id DESC";
+            let data = sqlx::query_as::<_, KualitasAirRecord>(sql)
+                .fetch_all(pool.inner())
+                .await
+                .map_err(|e| format!("Gagal mengambil data dari database: {}", e))?;
+
+            services::csv_service::export_to_csv(&data, &path_str)?;
+
+            Ok(format!("Data berhasil diexport ke: {}", path_str))
+        },
+        None =>
+        {
+            // user menekan cancel di dialog
+            Err("Export dibatalkan pengguna".to_string())
+        }
     }
 }

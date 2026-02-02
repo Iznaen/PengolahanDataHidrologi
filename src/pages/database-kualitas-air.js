@@ -255,11 +255,18 @@ function setupBasicEventListeners() {
     
     // Export All button
     const btnExportAll = document.getElementById('btnExportAll');
-    if (btnExportAll) {
-        btnExportAll.addEventListener('click', () => {
-            console.log("Export All button clicked (functionality coming in Fase 5)");
-            alert("Export All functionality will be implemented in Fase 5");
-        });
+    if (btnExportAll)
+    {
+        btnExportAll.addEventListener
+        (
+            'click', async (e) =>
+            {
+                e.stopPropagation();
+                // console.log("Export button clicked for record:", record.id || index);
+
+                await handleExport();
+            }
+        )
     }
     
     // Go to Input button (empty state)
@@ -329,6 +336,43 @@ function setupBasicEventListeners() {
     
     console.log("✅ Basic event listeners setup complete");
 }
+
+// ============================================================
+// FUNGSI EXPORT KE .csv
+// ============================================================
+// note: saat ini memanggil SEMUA data
+// warning: potensi memory leak saat memanggil backend
+// untuk menggunakan explorer os dalam menulis file
+// ke hard-drive
+// ------------------------------------------------------------
+async function handleExport()
+{
+    try
+    {
+        console.log("Memulai proses export ke csv ...");
+        document.body.style.cursor = 'wait';
+
+        // panggil export_kualitas_air_csv dari rust
+        const result = await invoke('export_kualitas_air_csv');
+
+        document.body.style.cursor = 'default';
+        console.log("Export berhasil: result");
+        alert("SUKSES: " + result);
+    }
+    catch (error)
+    {
+        document.body.style.cursor = 'default';
+        console.error("Export gagal: ", error);
+
+        if (String(error).includes("dibatalkan"))
+        {
+            return;
+        }
+
+        alert("Gagal export: " + error);
+    }
+}
+// ------------------------------------------------------------
 
 /**
  * Show modal (placeholder for Fase 4)

@@ -27,3 +27,4 @@ chrono = { version = "0.4", features = ["serde"] }
 regex = "1.10"
 pdf-extract = "0.7"
 tauri-plugin-dialog = "2.6.0"
+csv = "1.3"
