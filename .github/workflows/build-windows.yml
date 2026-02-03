@@ -1,7 +1,9 @@
 name: Build Windows Exe
 
 on:
-  workflow_dispatch:
+  # push:
+  #   branches: [ "**" ]    <-- SAYA MATIKAN (COMMENT) AGAR TIDAK JALAN OTOMATIS
+  workflow_dispatch:      # <-- HANYA BISA DIJALANKAN TOMBOL KLIK MANUAL
 
 jobs:
   build-tauri:
