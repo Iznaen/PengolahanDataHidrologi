@@ -1,204 +1,269 @@
-/* ============================================================
-   STYLE LAPORAN CETAK (A4)
-   File: src/pages/laporan-cetak.css
-   ============================================================ */
+/* cetak-kualitas-air.css */
+/* Styling untuk Laporan Hasil Uji Kualitas Air - Tema Biru-Kuning Kementerian PU */
 
-/* 1. Container Kertas A4 (Tampilan di Layar/Modal) */
-#laporan-cetak-container {
-    width: 210mm;        /* Lebar A4 */
-    min-height: 297mm;   /* Tinggi A4 */
-    padding: 15mm;       /* Margin cetak aman */
-    background-color: white;
-    margin: 0 auto;      /* Center di tengah modal */
-    box-shadow: 0 0 15px rgba(0,0,0,0.1); /* Efek bayangan kertas */
-    position: relative;
+/* ==========================================================================
+   STYLING TAMPILAN LAYAR (PREVIEW MODAL)
+   ========================================================================== */
+
+/* Reset dan dasar */
+* {
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #000;         /* Paksa hitam untuk cetak */
+    margin: 0;
+    padding: 0;
 }
 
-/* 2. Judul Laporan (Kop) */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 11pt;
+    line-height: 1.4;
+    color: #333;
+    background-color: #fff;
+}
+
+/* Container Kertas A4 (Tampilan di Layar) */
+#laporan-cetak-container {
+    width: 21cm; /* Lebar A4 */
+    min-height: 29.7cm; /* Tinggi A4 */
+    padding: 1.5cm;
+    margin: 0 auto;
+    background-color: #ffffff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: hidden; 
+}
+
+/* Header Laporan */
 .laporan-header {
     text-align: center;
-    border-bottom: 2px solid #2c3e50;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
+    margin-bottom: 1.5cm;
+    border-bottom: 3px solid #0054a6; /* Biru PU */
+    padding-bottom: 0.5cm;
+    position: relative;
 }
 
 .laporan-header h2 {
+    color: #0054a6;
     font-size: 18pt;
+    margin-bottom: 0.2cm;
     text-transform: uppercase;
-    color: #2c3e50;
-    margin-bottom: 5px;
+    letter-spacing: 1px;
+    font-weight: 800;
 }
 
 .laporan-header p {
-    font-size: 10pt;
     color: #555;
+    font-size: 11pt;
+    font-weight: 500;
 }
 
-/* 3. Grid Metadata (Nama Pos, Lokasi, dll) */
-/* Kita ubah layout form input menjadi grid laporan yang rapi */
+/* Garis dekoratif kuning */
+.laporan-header::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #ffcc00; /* Kuning PU */
+}
+
+/* Grid Layout Metadata */
 .laporan-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 Kolom */
-    gap: 15px 30px; /* Gap antar baris dan kolom */
-    margin-bottom: 20px;
-    border: 1px solid #eee;
-    padding: 15px;
-    border-radius: 4px;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5cm;
+    margin-bottom: 1cm;
 }
 
 .laporan-field {
+    margin-bottom: 0.3cm;
     display: flex;
     flex-direction: column;
 }
 
 .laporan-field label {
-    font-size: 9pt;
-    font-weight: bold;
-    color: #555;
+    font-weight: 700;
+    color: #0054a6;
     margin-bottom: 2px;
+    font-size: 9pt;
+    text-transform: uppercase;
 }
 
-/* Trik: Ubah Input menjadi seperti Teks Biasa */
+/* Input Readonly Styling */
 .laporan-field input,
-#laporan-cetak-container .table-input-hasil {
-    border: none;           /* Hapus kotak border */
-    border-bottom: 1px dotted #ccc; /* Ganti dengan garis titik-titik tipis */
-    background: transparent;
+.table-input-hasil {
+    border: none;
+    border-bottom: 1px dotted #999;
+    padding: 2px 0;
     font-size: 10pt;
     font-weight: 600;
+    background-color: transparent;
     color: #000;
-    padding: 2px 0;
     width: 100%;
+    border-radius: 0;
 }
 
-/* Hilangkan outline saat diklik (karena ini read-only) */
-.laporan-field input:focus,
-#laporan-cetak-container .table-input-hasil:focus {
-    outline: none;
-    border-bottom: 1px solid #3498db;
-}
-
-/* 4. Tabel Hasil Uji */
+/* Tabel Parameter */
 .laporan-table {
     width: 100%;
     border-collapse: collapse;
+    margin-bottom: 1cm;
     font-size: 9pt;
-    margin-top: 10px;
 }
 
-.laporan-table th {
-    background-color: #2c3e50 !important; /* Paksa warna header */
-    color: white !important;
-    padding: 8px;
-    text-align: center;
-    border: 1px solid #2c3e50;
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact; /* Agar background ter-print */
+.laporan-table thead th {
+    background-color: #0054a6;
+    color: white;
+    padding: 8px 5px;
+    text-transform: uppercase;
+    font-size: 9pt;
+    border: 1px solid #003d7a;
+    /* Pastikan warna background tercetak di browser modern */
+    -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
 }
 
 .laporan-table td {
-    padding: 6px 8px;
-    border: 1px solid #ddd;
+    padding: 4px 6px;
+    border: 1px solid #ccc;
+    vertical-align: middle;
 }
 
 .laporan-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-    print-color-adjust: exact;
+    background-color: #f2f7fb;
     -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
 }
 
-.laporan-category-row {
-    background-color: #dbeaf9 !important;
-    font-weight: bold;
+.text-center { text-align: center; }
+
+/* Kategori Row (Fisika, Kimia, dll) */
+.laporan-category-row td {
+    background-color: #fff3cd !important;
+    color: #856404;
+    font-weight: 800;
     text-transform: uppercase;
-    font-size: 8pt;
-    print-color-adjust: exact;
+    font-size: 8.5pt;
+    padding: 6px;
     -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
 }
 
-/* 5. Footer Laporan (Tanda Tangan) */
+/* Hasil Perhitungan Box */
+#laporan-cetak-container > div[style*="border"] {
+    border: 2px solid #0054a6 !important;
+    background-color: #f0f8ff !important;
+    border-radius: 8px;
+    padding: 15px !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+#lap_nilaiIp, #lap_statusIp {
+    border: none !important;
+    background: transparent !important;
+    font-size: 12pt !important;
+    color: #000 !important;
+}
+
+/* Footer Tanda Tangan */
 .laporan-footer {
-    margin-top: 40px;
+    margin-top: 1.5cm;
     display: flex;
     justify-content: space-between;
-    page-break-inside: avoid; /* Jangan potong tanda tangan ke halaman lain */
+    page-break-inside: avoid;
 }
 
 .ttd-box {
-    width: 200px;
     text-align: center;
+    width: 200px;
 }
 
 .ttd-space {
-    height: 70px; /* Ruang untuk tanda tangan */
+    height: 2cm;
 }
 
 .ttd-name {
     font-weight: bold;
     text-decoration: underline;
+    font-size: 10pt;
 }
 
-/* ============================================================
-   KONFIGURASI PRINT (CTRL+P)
-   Bagian ini akan menyembunyikan semua UI aplikasi
-   dan hanya memunculkan kertas A4.
-   ============================================================ */
+/* ========================================================
+   ATURAN KHUSUS CETAK (PRINT) - REVISI FINAL
+   ======================================================== */
 @media print {
-    /* Sembunyikan semua elemen BODY kecuali modal */
-    body > *:not(#detailModal) {
-        display: none !important;
+    @page {
+        size: A4 portrait;
+        margin: 0;
     }
 
-    /* Reset Style Modal agar pas di kertas */
-    .modal-overlay {
-        position: static;
-        background: none;
-        padding: 0;
+    body * {
+        visibility: hidden;
+    }
+
+    html, body {
+        width: 100%;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background-color: white !important;
+        overflow: visible !important;
+    }
+
+    /* 4. TARGET UTAMA: MODAL */
+    /* Kita paksa modal terlihat DAN pindah ke pojok kiri atas */
+    #detailModal, 
+    #detailModal * {
+        visibility: visible !important;
+    }
+
+    #detailModal {
+        position: absolute !important; /* Absolute membiarkan konten memanjang ke hal 2 */
+        left: 0 !important;
+        top: 0 !important;           /* KUNCI: Tarik ke paling atas kertas */
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background-color: white !important;
+        z-index: 9999;
         display: block !important;
-        width: 100%;
-        height: auto;
     }
 
-    .modal-content {
-        box-shadow: none;
-        border: none;
-        width: 100%;
-        max-width: none;
-        max-height: none;
-        overflow: visible;
-        position: static;
-    }
-
-    /* Sembunyikan elemen UI Modal (Header Biru, Tombol Tutup/Cetak) */
+    /* 5. Sembunyikan UI Modal (Header Biru & Tombol) */
     .modal-header,
     .modal-footer,
-    .modal-close,
-    .loading-container {
+    .modal-close {
         display: none !important;
     }
 
-    /* Pastikan body modal terlihat */
+    /* 6. Reset Wrapper Modal */
+    .modal-content, 
     .modal-body {
-        padding: 0;
-        margin: 0;
-        overflow: visible;
+        border: none !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        position: static !important;
     }
 
-    /* Atur Container Laporan agar Full Page */
+    /* 7. Styling Container Laporan (Padding Kertas) */
+    /* Karena margin @page kita 0, kita beri jarak aman di sini */
     #laporan-cetak-container {
-        margin: 0;
-        padding: 0;
-        box-shadow: none;
-        width: 100%;
+        width: 100% !important;
+        margin: 0 !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
     }
 
-    /* Konfigurasi Halaman Printer */
-    @page {
-        size: A4;
-        margin: 10mm; /* Margin fisik printer */
+    /* 8. Warna Tinta */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
     }
 }
