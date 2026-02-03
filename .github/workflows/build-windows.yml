@@ -2,7 +2,6 @@ name: Build Windows Exe
 
 on:
   workflow_dispatch:
-    branches: [ "**" ]
 
 jobs:
   build-tauri:
