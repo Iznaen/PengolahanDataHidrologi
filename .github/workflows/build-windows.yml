@@ -1,9 +1,8 @@
 name: Build Windows Exe
 
 on:
-  push:
+  workflow_dispatch:
     branches: [ "**" ]
-  workflow_dispatch: # Agar bisa dijalankan manual lewat tab Actions
 
 jobs:
   build-tauri:

@@ -195,7 +195,7 @@ body {
 @media print {
     @page {
         size: A4 portrait;
-        margin: 0;
+        margin: 1.5cm; /* Atau 1cm minimal untuk margin aman printer */
     }
 
     body * {
@@ -211,59 +211,79 @@ body {
         overflow: visible !important;
     }
 
-    /* 4. TARGET UTAMA: MODAL */
-    /* Kita paksa modal terlihat DAN pindah ke pojok kiri atas */
+    /* Target modal utama */
     #detailModal, 
     #detailModal * {
         visibility: visible !important;
     }
 
     #detailModal {
-        position: absolute !important; /* Absolute membiarkan konten memanjang ke hal 2 */
+        position: fixed !important;
         left: 0 !important;
-        top: 0 !important;           /* KUNCI: Tarik ke paling atas kertas */
+        top: 0 !important;
         width: 100% !important;
+        height: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
         background-color: white !important;
         z-index: 9999;
         display: block !important;
+        overflow: visible !important;
     }
 
-    /* 5. Sembunyikan UI Modal (Header Biru & Tombol) */
+    /* Sembunyikan UI Modal */
     .modal-header,
     .modal-footer,
     .modal-close {
         display: none !important;
     }
 
-    /* 6. Reset Wrapper Modal */
+    /* Reset wrapper modal */
     .modal-content, 
     .modal-body {
         border: none !important;
         box-shadow: none !important;
         width: 100% !important;
+        height: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
         position: static !important;
+        overflow: visible !important;
     }
 
-    /* 7. Styling Container Laporan (Padding Kertas) */
-    /* Karena margin @page kita 0, kita beri jarak aman di sini */
+    /* PERBAIKAN UTAMA: Hapus position:absolute dan biarkan container mengikuti flow */
     #laporan-cetak-container {
         width: 100% !important;
+        min-height: 100% !important;
+        padding: 0 !important; /* Padding sudah dari @page margin */
         margin: 0 !important;
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
+        position: static !important; /* Ganti dari absolute ke static */
+        left: auto !important;
+        top: auto !important;
         box-shadow: none !important;
         border: none !important;
+        overflow: visible !important;
     }
 
-    /* 8. Warna Tinta */
+    /* Pastikan konten di dalam container tetap memiliki spacing */
+    .laporan-header {
+        margin-top: 0; /* Reset karena @page sudah kasih margin */
+        margin-bottom: 1cm;
+    }
+
+    /* Warna Tinta */
     * {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
         color-adjust: exact !important;
+    }
+    
+    /* Mencegah page break di tengah konten penting */
+    .laporan-table {
+        page-break-inside: avoid;
+    }
+    
+    .laporan-footer {
+        page-break-inside: avoid;
     }
 }
