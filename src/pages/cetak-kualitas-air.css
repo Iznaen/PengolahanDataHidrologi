@@ -1,9 +1,8 @@
-/* cetak-kualitas-air.css */
-/* Styling untuk Laporan Hasil Uji Kualitas Air - Tema Biru-Kuning Kementerian PU */
-
-/* ==========================================================================
+/* ===============================================================
    STYLING TAMPILAN LAYAR (PREVIEW MODAL)
-   ========================================================================== */
+   ============================================================= */
+
+
 
 /* Reset dan dasar */
 * {
@@ -20,10 +19,11 @@ body {
     background-color: #fff;
 }
 
+
 /* Container Kertas A4 (Tampilan di Layar) */
 #laporan-cetak-container {
-    width: 21cm; /* Lebar A4 */
-    min-height: 29.7cm; /* Tinggi A4 */
+    width: 21cm;
+    min-height: 29.7cm;
     padding: 1.5cm;
     margin: 0 auto;
     background-color: #ffffff;
@@ -32,44 +32,59 @@ body {
     overflow: hidden; 
 }
 
-/* Header Laporan */
+.breakline {
+    margin-top: 1rem;
+    height: 0.5rem;
+    background: var(--pu-blue-light)
+}
+
+
+/* ============================================================ */
+/* KOP ======================================================== */
+/* ============================================================ */
+.kop {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    background: var(--grad-one);
+    color: var(--white)
+}
+
+.kop-left {
+    display: flex;
+    width: 60px;
+    height: 60px;
+}
+
+.kop-right > .dirjen {
+    letter-spacing: 0.11rem;
+    font-weight: 700;
+}
+
+.kop-right > .balai {
+    letter-spacing: 0.18rem;
+}
+
+
+/* ============================================================ */
+/* HEADER ===================================================== */
+/* ============================================================ */
 .laporan-header {
-    text-align: center;
-    margin-bottom: 1.5cm;
-    border-bottom: 3px solid #0054a6; /* Biru PU */
-    padding-bottom: 0.5cm;
-    position: relative;
-}
-
-.laporan-header h2 {
-    color: #0054a6;
-    font-size: 18pt;
-    margin-bottom: 0.2cm;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 800;
-}
-
-.laporan-header p {
-    color: #555;
-    font-size: 11pt;
-    font-weight: 500;
-}
-
-/* Garis dekoratif kuning */
-.laporan-header::after {
-    content: "";
-    position: absolute;
-    bottom: -6px;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background-color: #ffcc00; /* Kuning PU */
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    background: var(--grey-medium);
+    border-left: 0.5rem solid var(--pu-gold);
 }
 
 /* Grid Layout Metadata */
 .laporan-grid {
     display: grid;
+    margin-top: 3rem;
     grid-template-columns: 1fr 1fr;
     gap: 1.5cm;
     margin-bottom: 1cm;
@@ -168,10 +183,9 @@ body {
 
 /* Footer Tanda Tangan */
 .laporan-footer {
-    margin-top: 1.5cm;
+    margin-top: 2rem;
     display: flex;
     justify-content: space-between;
-    page-break-inside: avoid;
 }
 
 .ttd-box {
@@ -195,7 +209,7 @@ body {
 @media print {
     @page {
         size: A4 portrait;
-        margin: 1.5cm; /* Atau 1cm minimal untuk margin aman printer */
+        margin: 1cm;
     }
 
     body * {
@@ -255,35 +269,20 @@ body {
     #laporan-cetak-container {
         width: 100% !important;
         min-height: 100% !important;
-        padding: 0 !important; /* Padding sudah dari @page margin */
+        padding: 0 !important;
         margin: 0 !important;
-        position: static !important; /* Ganti dari absolute ke static */
+        position: static !important;
         left: auto !important;
         top: auto !important;
         box-shadow: none !important;
         border: none !important;
         overflow: visible !important;
-    }
-
-    /* Pastikan konten di dalam container tetap memiliki spacing */
-    .laporan-header {
-        margin-top: 0; /* Reset karena @page sudah kasih margin */
-        margin-bottom: 1cm;
+        page-break-inside: avoid;
     }
 
     /* Warna Tinta */
     * {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
-        color-adjust: exact !important;
-    }
-    
-    /* Mencegah page break di tengah konten penting */
-    .laporan-table {
-        page-break-inside: avoid;
-    }
-    
-    .laporan-footer {
-        page-break-inside: avoid;
     }
 }

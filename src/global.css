@@ -8,10 +8,13 @@
     --gray-dark: #333333;
     --text-primary: #2c3e50;
     --text-secondary: #546e7a;
-    --white: #ffffff;
+    --white: #f4f4f4;
     --shadow: 0 4px 12px rgba(0, 51, 160, 0.1);
     --border-radius: 8px;
     --transition: all 0.3s ease;
+
+    --grad-one: linear-gradient(to right, var(--pu-blue-light), var(--pu-blue));
+    --grad-two: linear-gradient(to left, var(--pu-blue-light), var(--pu-blue));
 }
 
 * {

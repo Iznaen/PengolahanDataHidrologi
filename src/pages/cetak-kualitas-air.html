@@ -1,7 +1,21 @@
 <div id="laporan-cetak-container">
+    <div class="kop">
+        <div class="kop-left">
+            <img src="../assets/Logo_PU_(RGB).jpg" alt="Logo PU">
+        </div>
+
+        <div class="kop-right">
+            <h2 class="kemen">KEMENTERIAN PEKERJAAN UMUM</h2>
+            <p class="dirjen">DIREKTORAT JENDERAL SUMBER DAYA AIR</p>
+            <p class="balai">Balai Wilayah Sungai Sulawesi IV Kendari</p>
+        </div>
+    </div>
+
+    <div class="breakline"></div>
+
     <div class="laporan-header">
-        <h2>Laporan Hasil Uji Kualitas Air</h2>
-        <p>Sistem Data Hidrologi & Kualitas Air</p>
+        <h2>LAPORAN HASIL UJI SAMPEL KUALITAS AIR</h2>
+        <p>Unit Kerja Hidrologi & Kualitas Air</p>
     </div>
 
     <div class="laporan-grid">
@@ -77,6 +91,23 @@
             <tr><td class="text-center">9</td><td>Klorida (Cl)</td><td class="text-center">mg/L</td><td><input type="text" id="lap_klorida" class="table-input-hasil" readonly></td><td class="text-center">300</td></tr>
             <tr><td class="text-center">10</td><td>Amoniak (NH3-N)</td><td class="text-center">mg/L</td><td><input type="text" id="lap_amoniak" class="table-input-hasil" readonly></td><td class="text-center">0.2</td></tr>
             <tr><td class="text-center">11</td><td>Nitrat (NO3-N)</td><td class="text-center">mg/L</td><td><input type="text" id="lap_nitrat" class="table-input-hasil" readonly></td><td class="text-center">10</td></tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div id="laporan-cetak-container">
+    <table class="laporan-table">
+        <thead>
+            <tr>
+                <th width="5%">No</th>
+                <th width="45%">Parameter</th>
+                <th width="15%">Satuan</th>
+                <th width="20%">Hasil Uji</th>
+                <th width="15%">Baku Mutu</th>
+            </tr>
+        </thead>
+        <tbody>
             <tr><td class="text-center">12</td><td>Nitrit (NO2-N)</td><td class="text-center">mg/L</td><td><input type="text" id="lap_nitrit" class="table-input-hasil" readonly></td><td class="text-center">0.06</td></tr>
             <tr><td class="text-center">13</td><td>Fosfat (PO4)</td><td class="text-center">mg/L</td><td><input type="text" id="lap_fosfat" class="table-input-hasil" readonly></td><td class="text-center">0.2</td></tr>
             <tr><td class="text-center">14</td><td>Deterjen (MBAS)</td><td class="text-center">mg/L</td><td><input type="text" id="lap_deterjen" class="table-input-hasil" readonly></td><td class="text-center">0.2</td></tr>
