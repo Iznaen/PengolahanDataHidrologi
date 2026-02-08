@@ -46,11 +46,7 @@ export function populatePrintTemplate(record) {
 
     // 1. Populate Metadata
     setVal('lap_namaPos', record.nama_pos);
-    
-    // Gabungkan DAS / Sungai
-    const dasSungai = [record.das, record.sungai].filter(Boolean).join(' / ');
-    setVal('lap_das', dasSungai);
-    
+    setVal('lap_das', record.das);
     setVal('lap_wilayahSungai', record.wilayah_sungai);
     
     // Gabungkan Desa / Kecamatan
